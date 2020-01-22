@@ -1,0 +1,295 @@
+<html>
+    <head>
+            <link href="{{url_for('static',filename='css/dashboard.css')}}" rel="stylesheet">
+            <link href="{{url_for('static', filename='css/dataTables.bootstrap.min.css')}}  " rel="stylesheet">
+            <link href="{{url_for('static',filename='css/print.min.css')}}" rel="stylesheet">
+            <link href="{{url_for('static', filename='css/bootstrap.min.css')}}" rel="stylesheet">
+        <style>
+            body{
+                margin-top: 15px;
+                margin-left: 15px;
+                margin-right: 15px;
+
+            }
+        </style>
+        <style type="text/css" media="print">
+
+            tbody{
+                counter-reset: Serial;  
+            }
+            .auto-index td:first-child:before
+            {
+              counter-increment: Serial;      /* Increment the Serial counter */
+              content: counter(Serial); /* Display the counter */
+            }
+
+            @page 
+                {size: landscape  ;}
+            @media print{
+                table, th, td
+                    {
+                    
+                    border: 1px solid black;
+                    font-size: 12px;
+                   
+                    }
+                  
+                    table {
+                        width: 100%;
+                        clear: both;
+                        border-collapse: collapse;
+                        table-layout: auto;
+                    }
+                    thead, tfoot {
+                                 display: table-row-group;
+                            }
+                              
+                    tr {
+                                page-break-inside: avoid;
+                            }
+                    
+             
+                
+
+                .card-header h5{
+                    margin-top: 0;
+                }
+                .card-header h3{
+                    font-size: 16px;
+                }
+                .card-header p {
+                    font-size: 13px;
+                    
+                }
+                .card-body{
+                    margin-top: 0   ;
+                    
+                }
+                .card-header{
+                    margin:0;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container-fulid">
+                
+                <div class="">
+                        <div id="header" class="text-center">
+                                <h5 class="mb-0">Siddhi Vinayak Knots and Prints Pvt. Ltd.</h5>
+                                <p class=" mb-0 text-monospace text-muted">A-26 To A-32, "Central Park", G.I.D.C Pandesra, SURAT-394221.
+                                    </p>
+                                    <h5 class="mb-0 mt-2">{{title}}</h5>
+                            
+                        </div>
+                        <div class="mr-2 mb-2 row">
+                                <div class="text-right ml-4">
+                                       <strong> Date: {{date.strftime('%d/%m/%Y')}}</strong>
+                               </div>
+                               {% if department %}
+                               <div class="ml-4 text-center">
+                                    <strong> Department : {{department.department_name}}</strong>
+                               </div>
+                               {% endif %}
+                               <div class="col text-right">
+                                      <strong >Total Count:<span class="ml-2">{{count}}
+                                       </strong>
+                               </div>
+                               
+                           </div>
+                        <div class="">
+
+
+                           {% if title == 'Outside Vehicle Records' %}
+                            <table class=" auto-index  table-sm table-bordered">
+                                <thead >
+                                    <tr class="text-center">
+                                        <th>#</th>
+                                        <th>Vehicle No</th>
+                                        <th>Vendor Name</th>
+                                        <th>Department</th>
+                                        <th>In Time</th>
+                                        <th>Out Time</th>
+                                        <th>Total Duration </th>
+                                    </tr>
+                                </thead>
+                                
+                                <tbody>
+                                    {% for vi in query %}
+                                     <tr>
+                                            <td></td>
+                                            <td>{{vi.VeNO[:2]}}-{{vi.VeNO[2:4]}}-{{vi.VeNO[4:6]}}-{{vi.VeNO[-4:]}}</td>
+                                            <td>{{vi.VendorName}}</td>
+                                            <td>{{vi.outside_dept.department_name}}</td>
+
+
+                                            {% if vi.InTime == None %}
+                                            <td></td>
+                                            {% else %}
+                                            <td>{{vi.InTime.strftime('%H:%M')}}</td>
+                                            {% endif %}
+
+                                            {% if vi.OutTime == None %}
+                                            <td></td>
+                                            {% else %}
+                                            <td>{{vi.OutTime.strftime('%H:%M')}}</td>
+                                            {% endif %}
+
+
+                                            <td>{{vi.TotalDuration}}</td>
+                                    </tr>
+                                    {% endfor %}    
+                                </tbody>
+                            </table>
+                            {% endif %}
+
+
+                            {% if title == 'Outside Vehicle Record Sorted by Dept' %}
+                            <table class=" auto-index table-sm table-bordered">
+                                <thead >
+                                    <tr class="text-center">
+                                        <th>#</th>
+                                        <th>Vehicle No</th>
+                                        <th>Vendor Name</th>
+                                        <th>Department</th>
+                                        <th>In Time</th>
+                                        <th>Out Time</th>
+                                        <th>Total Duration </th>
+                                    </tr>
+                                </thead>
+                                
+                                <tbody>
+                                    {% for vi in query | sort(attribute='outside_dept.department_name') %}
+                                     <tr>
+                                            <td></td>
+                                            <td>{{vi.VeNO}}</td>
+                                            <td>{{vi.VendorName}}</td>
+                                            <td>{{vi.outside_dept.department_name}}</td>
+
+
+                                            {% if vi.InTime == None %}
+                                            <td></td>
+                                            {% else %}
+                                            <td>{{vi.InTime.strftime('%H:%M')}}</td>
+                                            {% endif %}
+
+                                            {% if vi.OutTime == None %}
+                                            <td></td>
+                                            {% else %}
+                                            <td>{{vi.OutTime.strftime('%H:%M')}}</td>
+                                            {% endif %}
+
+                                            {% if vi.TotalDuration == none %}
+                                            <td></td>
+                                            {% else %}
+                                            <td>{{vi.TotalDuration}}</td>
+                                            {% endif %}
+                                    </tr>
+                                    {% endfor %}    
+                                </tbody>
+                            </table>
+                            {% endif %}
+
+
+
+                            {% if title == 'Outside Vehicle Records by Department' %}
+                            <table class=" auto-index  table-sm table-bordered">
+                                <thead >
+                                    <tr class="text-center">
+                                        <th>#</th>
+                                        <th>Vehicle No</th>
+                                        <th>Vendor Name</th>
+                                        <th>Department</th>
+                                        <th>In Time</th>
+                                        <th>Out Time</th>
+                                        <th>Total Duration </th>
+                                    </tr>
+                                </thead>
+                                
+                                <tbody>
+                                    {% for vi in query %}
+                                     <tr>
+                                            <td></td>
+                                            <td>{{vi.VeNO}}</td>
+                                            <td>{{vi.VendorName}}</td>
+                                            <td>{{vi.outside_dept.department_name}}</td>
+
+
+                                            {% if vi.InTime == None %}
+                                            <td></td>
+                                            {% else %}
+                                            <td>{{vi.InTime.strftime('%H:%M')}}</td>
+                                            {% endif %}
+
+                                            {% if vi.OutTime == None %}
+                                            <td></td>
+                                            {% else %}
+                                            <td>{{vi.OutTime.strftime('%H:%M')}}</td>
+                                            {% endif %}
+
+                                            {% if vi.TotalDuration == none %}
+                                            <td></td>
+                                            {% else %}
+                                            <td>{{vi.TotalDuration}}</td>
+                                            {% endif %}
+                                    </tr>
+                                    {% endfor %}    
+                                </tbody>
+                            </table>
+                            {% endif %}
+
+
+                            {% if title == 'Mill Vehicle Records' %}
+                            <table class=" auto-index table-sm table-bordered">
+                                    <thead >
+                                        <tr class="text-center">
+                                            <th>#</th>
+                                            <th>Vehicle No</th>
+                                            <th>Department</th>
+                                            <th>Out Time</th>
+                                            <th>In Time</th>
+                                            <th>Total Duration </th>
+                                        </tr>
+                                    </thead>
+                                    
+                                    <tbody>
+                                        {% for vi in query %}
+                                         <tr>
+                                                <td></td>
+                                                <td>{{vi.comp_timesheet.comp_vehicle_no}}</td>
+                                                <td>{{vi.mill_dept.department_name}}</td>
+                                                {% if vi.OutTime == None %}
+                                                <td></td>
+                                                {% else %}
+                                                <td>{{vi.OutTime.strftime('%H:%M')}}</td>
+                                                {% endif %}
+
+
+                                                {% if vi.InTime == None %}
+                                                <td></td>
+                                                {% else %}
+                                                <td>{{vi.InTime.strftime('%H:%M')}}</td>
+                                                {% endif %}
+                                                <td>{{vi.duration}}</td>
+                                        </tr>
+                                        {% endfor %}    
+                                    </tbody>
+                                </table>
+                            {% endif %}
+
+
+                        </div>
+                    </div>
+        </div>
+        <script src="{{url_for('static', filename='js/jquery-3.4.js')}}"></script>
+    </body>
+<script type="text/javascript">
+    var addSerialNumber = function(){
+        $('table tr').each(function(index){
+            $(this).find('td:nth-child(1)').html(index+0);
+        });
+    };
+    
+   
+</script>
+</html>

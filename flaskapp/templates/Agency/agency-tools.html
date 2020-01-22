@@ -1,0 +1,195 @@
+{% extends 'test-dashboard.html' %}
+
+
+<!--Page Title Block-->
+{% block pagetitle %}
+Agency Tools Log
+{% endblock %}
+<!-- End of Page Title BLock-->
+
+
+<!--Title Block-->
+{% block title %}
+Agency Tools Logging
+{% endblock %}
+<!--End of Title Block-->
+
+{% block body %}
+
+<div class="container-fulid">
+    <div class="row">
+        <div class="col-3 ml-2">
+            <div class="card">
+                <h5 class="card-header">Agency Tool Data</h5>
+                <div class="card-body">
+                       <div class="form-row">
+                           <form action="{{url_for('agencyapp.tools_agency')}}" method="POST" class=" justify-content-end">
+                                <label for="date">Select Date:</label>
+                                <div class=" form-inline">
+                                    <input id="date" type="date" class="form-control" name="date">
+                                    <input class="ml-3 btn btn-sm btn-primary" type="submit">
+                                </div>
+                               
+                           </form>
+                       </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col ml-2 ">
+            <div class="card">
+                <h5 class="card-header">Agency Timesheet</h5>
+                <div class="card-body">
+                    <table id="agencytable" class="table table-sm">
+                        <thead class="thead">
+                            <tr>
+                                <th>#</th>
+                                <th>Order No</th>
+                                <th>Agency Name</th>
+                                <th>WorkType</th>
+                                <th>Name</th>
+                                <th>Supervisor</th>
+                                <th>Location</th>
+                                
+                                
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for l in log %}  
+                            <tr id="data{{l.al_id}}">
+                                <td></td>
+                                <td id="order_no{{l.al_id}}">{{l.order}}</td>
+                                <td id="agency{{l.al_id}}">{{l.agenm.agency_name}} </td>
+                                <td>{{l.wtyp.work_type}}</td>
+                                <td>{{l.contact_person}}+ {{l.manpower}}</td>
+                                <td>{{l.superm.supervisor_name}}</td>
+                                <td>{{l.locationm.location_name}}</td>
+                                
+                                <td><button id="modalbtn{{l.al_id}}"  data-id="{{l.al_id}}" data-toggle="modal" data-target="#toolmodal" class="toolbtn btn btn-sm btn-warning" attributes="{{l.al_id}}">Add Tool</button></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                    <!--Tool Modals-->
+                    <div class="toolsmodal modal" tabindex="-1" role="dialog" id="toolmodal">
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                                <div id="successalert" class="alert alert-success" role="alert">OK</div>
+                                <div id="erroralert" class="alert alert-danger" role="alert" ></div>  
+                              <h5 class="modal-title">Add Tools</h5>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span> 
+                              </button>
+                            </div>
+                            <div class="modal-body">
+                                
+                                 <div class="form-group m-1 p-1">
+                                    <div class="form-inline">
+                                        <input id="tool_order" type="text" class="form-control">
+                                        <input id="tool_agencyname" type="text" class="form-control">
+                                        
+                                    </div>
+                                    
+                                        <div class="form-group mt-2">
+                                            <label>Add Tools</label>
+                                            <input id="agency_id" type="hidden" name="tool_logid">
+                                            <input id="tooltext" type="text" name="tool_text">
+                                            <input type="checkbox" name="in_company" id="in_company" value=1>
+                                            <input id="modalsubmitid"data-mid="1" type="submit" value="Add Tool" class="modalsubmit btn btn-primary btn-sm">
+                                        </div>
+                                    
+                                    
+                                    
+                                    
+                                 </div>
+                             
+                             <table  class="tooltable table table-condensed">
+                                 <thead>
+                                     <tr>
+                                         <th></th>
+                                         <th></th>
+                                     </tr>
+                                 </thead>
+                                 <tbody>
+                    
+                                   {% for t in tools %}
+                                    
+                                        <tr>
+                                            <td>{{t.tool_name}}</td>
+                                            <td>{{t.in_company}}</td>
+                                        </tr>
+                                   {% endfor %}
+                                 </tbody>
+                             </table>
+                            </div>
+                            <div class="modal-footer">
+                              
+                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script>
+  
+</script>
+
+
+<script>
+   $('.toolsmodal').on('show.bs.modal', function(e){
+       $('.alert').alert('close')
+       var id = $(e.relatedTarget).data('id')
+       var order_no = $('#order_no'+id).html()
+       var agency_name = $('#agency'+id).html()
+
+       $('#tool_order').val(order_no)
+       $('#tool_agencyname').val(agency_name)
+       $('#agency_id').val(id)
+       $('#modalsubmitid').data('mid',id);
+       
+       $.ajax({
+           url:'/get_tool_log',
+           type:'POST',
+           data:{agency_id:id}
+       }).done(function(data){
+           
+    });
+   
+    localStorage.setItem('modalItem', id);
+});
+</script>
+<!-- Tools Add Option-->
+<script>
+
+    $('#modalsubmitid').on('click',function(event){
+        agency_id = $('#agency_id').val(),
+        tool_text = $('#tooltext').val(),    
+        check_mark = $('#in_company').val(),
+        
+        $.ajax({
+             url:'/toolbox',
+             type:'POST',
+             data:{agency_id:agency_id, tool_name:tool_text, in_company:check_mark}
+        }).done(function(data){
+           
+        });
+
+    });
+</script>
+<script>
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,81 @@
+{% extends 'test-dashboard.html' %}
+
+{% block pagetitle %}
+Outside Vehicle Dashboard
+{% endblock %}
+<!-- End of Page Title BLock-->
+
+
+<!--Title Block-->
+{% block title %}
+Dashboard for 
+{% endblock %}
+<!--End of Title Block-->
+
+{% block linktitle %}
+ Outside Vehicle Data 
+{% endblock %}
+
+{% block body %}
+<div class="row" id="vehicle_card">
+        <div class="col">
+                <div class="card">
+                    <h5 class="card-header"> Outside Vehicles Summary</h5>
+                    <div class="card-body">
+                        <div class="card-text">
+                            <h4 class="card-title">Today's Count</h4>
+                            <p class="display-4">{{query_vehicles_today}}</p>
+                            <h4 class="card-title"> Total Vehicles</h4>
+                            <p class="display-4">{{query_vehicles_all}}</p>
+    
+                        </div>
+    
+                    </div>
+                </div>
+            </div>
+        <div class="mr-4 col">
+            <div class="card">
+                <h5 class="card-header">Date Wise Summary</h5>
+                <div class="card-body">
+                    <div  style="height: 500px; width:800px; " id="outsidevehiclechart">
+                        
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+</div>
+<script src="{{url_for('static', filename='js/chart.min.js')}}"></script>
+
+{% endblock %}
+
+{% block script %}
+
+    <script type="text/javascript">
+        var data = [
+        {
+        
+
+            x: [
+                
+            {% for i in total_count %}
+            "{{i[0]}}",
+            {% endfor %}
+
+            ],
+
+            y: [
+            {% for i in total_count %}
+                        {{i[1]}},
+                    {% endfor %}
+            ],
+            
+            type: 'scatter'
+        }
+    ];
+
+    Plotly.newPlot('outsidevehiclechart', data);
+    </script>  
+
+    
+{% endblock %}

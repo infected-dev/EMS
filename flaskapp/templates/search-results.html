@@ -1,0 +1,188 @@
+{% extends 'test-dashboard.html' %}
+
+{% block title %}Search {% endblock %}
+
+
+{% block body %}
+    <div class="container text-monospace">
+        <h4><span class="mr-1 text-danger">{{count}}</span>Search Results For: </h4>
+        <p>{{text_search}}</p>
+        <p>{{date_search}}</p>
+        <p>{{time_search}}</p>
+        <hr>
+    </div>
+
+<div class="container">
+    <!--Text Search ----------------------------->
+
+{%if text_search %}
+<div class="container">
+    {%if search_visitor%}
+    <div class="card">
+            <h5 class="card-header">Visitors</h5>
+            <div class="card-body">
+                    
+                    <p class="card-title lead font-italic">{{search_visitor.name}}</p>
+                    <div class="mb-3 ml-2 mt-n2 p-0">
+                        <p class="h6 font-italic">Mobile No: {{search_visitor.contact}}</p>
+                        <p class="h6 font-italic mt-n2">Place From : {{search_visitor.place_from}}</p>
+                    </div>
+                   
+                    <button data-target="#visitor_timelog" data-toggle="collapse" class="mt-n2  btn btn-info btn-sm">Show Timelog    </button>
+                    <div id="visitor_timelog" class="mt-2 collapse">
+                            <table id="visitor_log" class="table table-responsive table-sm table-hover  p-1 ml-5">
+                                    <thead class="thead thead-light">
+                                        <tr class="text-center">
+                                            <th>ID</th>
+                                            <th>ACT ID</th>
+                                            <th>Date</th>
+                                            <th>Visiting Department</th>
+                                            <th>Visiting Employee</th>
+                                            <th>Visiting Purpose</th>
+                                            
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                            {% for vt in search_visitor_timesheet %}
+                                        <tr class="text-center font-weight-normal">
+                                            
+                                            <td>{{vt.id}}</td>
+                                            <td>{{vt.activity_id}}</td>
+                                            <td>{{vt.date.strftime('%d-%m-%y')}}</td>
+                                            <td>{{vt.active.visited_dept.department_name.title()}}</td>
+                                            <td>{{vt.active.visited_employee.employee_name.title()}}</td>
+                                            <td>{{vt.active.visiting_purpose.title()}}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                    </div>
+                    
+            </div>
+    </div>
+        {%endif%}
+    
+        {%if search_vehicle%}
+        <h5>Outside Vehicles</h5>
+        <p>{{search_vehicle.VeNO}}</p> 
+        {% endif %}
+    
+        {%if search_mill %}
+        <div class="card">
+            <h4 class="card-header">Company Vehicles</h4>
+        <div class="card-body">
+
+        
+        
+          <a  class="card-title lead font-weight-normal" href="/report/vehicles/mill/?comp_vehicle={{search_mill.id}}">{{search_mill.comp_vehicle_no}}</a>
+          <div class="">
+              <p class="mb-0"> Model Name : {{search_mill.model_name}}</p>
+              <p> Vehicle Type : {{search_mill.comp_vehicle_type.typename}}</p>
+          </div> 
+       
+    </div>    
+    </div>
+        {% endif %}
+    
+    
+</div>
+{% endif %}
+
+<!--Date Search -------------------------------------->
+{% if date_search %}
+
+    {% if search_visitor %}
+    <h3>Visitors</h3>
+    
+        <table class="table table-sm col-6">
+            <thead>
+                <tr>
+                    <th>Visitor Name</th>
+                    <th>Contact No</th>
+                    <th>In Time</th>
+                    <th>Out Time</th>
+                    <th>Duration</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in search_visitor %}
+                    <tr>
+                        <td>{{i.visitor_name}}</td>
+                        <td>{{i.visitor_contact}}</td>
+                        <td>{{i.entry_time}}</td>
+                        <td>{{i.exit_time}}</td>
+                        <td>{{i.total_duration}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    
+    {%endif%}
+
+
+    {% if search_vehicle %}
+    <h3>Outside Vehicles</h3>
+    
+    <table class="table table-sm col-5">
+        <thead>
+            <tr>
+                <th>Vehicle No</th>
+                <th>In Time</th>
+                <th>Out Time</th>
+                <th>Duration</th>
+            </tr>
+        </thead>
+        <tbody>
+                {% for i in search_vehicle%}
+                <tr>
+                        <td>{{i.VeNO}}</td>
+                        <td>{{i.InTime}}</td>
+                        <td>{{i.OutTime}}</td>
+                        <td>{{i.TotalDuration}}</td>
+                </tr>
+                {% endfor %}
+        </tbody>
+    </table>
+        
+    
+    {%endif%}
+
+
+    {% if search_company %}
+    <h3>Company Vehicle </h3>
+    <table class="table table-sm col-5">
+        <thead>
+            <tr>
+                <th>Vehicle No</th>
+                <th>Out Time</th>
+                <th>In Time</th>
+                <th>Duration</th>
+            </tr>
+        </thead>
+        <tbody>
+                {% for i in search_company %}
+                <tr>
+                    <td>{{i.comp_timesheet.comp_vehicle_no}}</td>
+                    <td>{{i.OutTime}}</td>
+                    <td>{{i.InTime}}</td>
+                    <td>{{i.duration}}</td>
+                </tr>
+                {% endfor %}
+        </tbody>
+    </table>
+    
+    {% endif %}
+
+{% endif %}
+
+</div>
+
+
+{% endblock %}
+
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#visitor_log').DataTable();
+} );
+</script>

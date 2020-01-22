@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <meta name="google-site-verification" content="us0SsMQZv_MwpHeqRzegn7LVmikRfzAxewNCHxBMaCE" />
+
+  <title>Login</title>
+
+  <link rel="icon" href="{{url_for('static', filename='images/lax.ico')}}">
+  <!-- Bootstrap core CSS -->
+  <link href="{{url_for('static',filename='css/bootstrap.min.css')}}" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href="{{url_for('static', filename='css/signin.css')}}" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(250deg, #743566, #a00e0e);
+      background-size: 400% 400%;
+    }
+
+    #company-name {
+      color: white;
+    }
+
+    .square{
+        width: 200px;
+        height: 200px;
+    }
+  </style>
+</head>
+
+<body class="container">
+<div class="row mb-3 ">
+    <div class="col text-center ">
+        <div id="company-name" class="">
+            <img class="img-thumbnail" src="{{url_for('static', filename='images/logo.png')}}" alt="" width=""
+              height="">
+            <h4>Siddhi Vinayak Knots and Prints Pvt Ltd.</h4>
+            <h5 class="lead"><em>Laxmipati Sarees</em></h5>
+          </div>
+    
+    </div>
+</div>
+
+<div class="row">
+    <div class="col p-2 d-flex justify-content-center">
+        <div class="">
+            <button data-id="MD01" class="p-3 square btn btn-primary btn-block" type="button" data-toggle="modal" data-target="#modal_plant_md01">
+                <img class="mb-3" src="{{url_for('static', filename='images/plant_md01_2.png')}}">
+                <span class="h4">
+                 Main-MD01
+                </span>
+        </button>
+        </div>
+    </div>
+
+    <div class="col d-flex justify-content-center">
+        <div class="">
+            <button data-id="WE01" class="p-3 square btn btn-secondary btn-block" data-toggle="modal" data-target="#modal_plant_we01">
+                <img class="mb-3" src="{{url_for('static', filename='images/plant_we01.png')}}">
+                <span class="h4">Sachin-WE01</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="modal_plant_md01" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 id="modaltitle" class="modal-title">Login For MD01</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+            </div>
+         
+                <div class="modal-body">
+                <div>
+                    <form action="{{url_for('auth.login_main')}}" method="POST">
+                    <div class="form-group">
+                        <label for="username">Username:</label>
+                        <select type="text" name="username" id="username" class="form-control" placeholder="" aria-describedby="helpId">
+                            {% for u in users_md01 %}
+                                <option value="{{u.username}}">{{u.username}}</option>
+                            {% endfor %}
+                        </select>
+                        
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input type="password" name="password" id="password" class="form-control" placeholder="" aria-describedby="helpId">
+                    </div>
+                    <input type="submit" class="btn btn-primary btn-block" value="Submit">
+                </form>
+                    
+                </div>
+                </div>
+               
+                   
+              
+        </div>
+    
+    </div>
+</div>
+
+<div class="modal fade" id="modal_plant_we01" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 id="modaltitle" class="modal-title">Login For WE01</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+            </div>
+         
+                <div class="modal-body">
+                <div>
+                    <form action="{{url_for('auth.login_main')}}" method="POST">
+                    <div class="form-group">
+                        <label for="username">Username:</label>
+                        <select type="text" name="username" id="username" class="form-control" placeholder="" aria-describedby="helpId">
+                            {% for u in users_we01 %}
+                                <option value="{{u.username}}">{{u.username}}</option>
+                            {% endfor %}
+                        </select>
+                        
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input type="password" name="password" id="password" class="form-control" placeholder="" aria-describedby="helpId">
+                    </div>
+                    <input type="submit" class="btn btn-primary btn-block" value="Submit">
+                </form>
+                    
+                </div>
+                </div>
+               
+                   
+              
+        </div>
+    
+    </div>
+</div>
+
+    <script src="{{url_for('static', filename='js/jquery-3.4.js')}}"></script>
+    <script src="{{url_for('static', filename='js/jquery.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/popper.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/print.min.js')}}"></script>
+   
+</body>

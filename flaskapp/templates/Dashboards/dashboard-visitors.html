@@ -1,0 +1,165 @@
+{% extends 'test-dashboard.html' %}
+
+{% block pagetitle %}
+Visitor Dashboard
+{% endblock %}
+
+{% block title %} Summary DashBoard {% endblock %}
+
+{% block body %}
+
+<div class="container-fulid">
+    <!--Count for The Total Visitors each day and overall-->
+    <div id="visitor_card" class="row">
+        <div class="col">
+            <div class="card">
+                <h5 class="card-header"> Visitors Summary</h5>
+                <div class="card-body">
+                    <div class="card-text">
+                        <h4 class="card-title">Today's Count</h4>
+                        <p class="display-4">{{query_visitors_today}}</p>
+                        <h4 class="card-title"> Total Visitors</h4>
+                        <p class="display-4">{{query_visitors_all}}</p>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class=" mr-4 col">
+            <div class="card">
+                    <h5 class="card-header"> Date Wise Summary </h5>
+                <div class="card-body">
+                    <div style="height: 400px; width:800px; " id="linechartforvisitors" >
+
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </div>
+
+
+    <!--Chart of Department Wise Count of Visitors-->
+    <div class="row mt-2">
+        <div class="col mr-4 mt-1">
+            <div class="card">
+                <h5 class="card-header">Department Wise Summary <em>(More Than 20 Visitors)</em>  </h5>
+                <div class="card-body">
+                    <div class="" >
+                        <div  id="barchartfordept">
+                            
+                        </div>
+                    </div>               
+            </div>
+        </div>
+    </div>
+
+    <div class="col mr-4 mt-1">
+        <div class="card">
+            <h5 class="card-header">Department Wise Summary <em>(Less Than 20 Visitors)</em>  </h5>
+            <div class="card-body">
+                <div class="" >
+                    <div  id="barchartfordeptless20">
+                        
+                    </div>
+                </div>               
+        </div>
+    </div>
+</div>
+
+</div>
+
+{% endblock %}
+
+{% block script %}
+
+<script src="{{url_for('static', filename='js/chart.min.js')}}"></script>
+
+<!--Date Wise Charting Script-->
+<script type="text/javascript">
+    var trace1 =  {
+            
+
+        x: [
+            
+            {% for i in total_count%}
+                '{{i[0]}}',
+            {% endfor %}
+
+        ],
+
+        y: [
+        {% for i in total_count %}
+                {{i[1]}},
+        {% endfor %}
+        ],
+        
+        type: 'scatter',
+        mode: 'lines+markers'
+    };
+
+    var data = [
+        trace1   
+        ];
+  
+  Plotly.newPlot('linechartforvisitors', data);
+</script>
+
+<!--Department Wise Charting script-->
+<script type="text/javascript">
+
+    var data = [
+            {
+            
+
+                x: [
+                    
+                    {% for i in lessthan_dept_count%}
+                        '{{i[0]}}',
+                    {% endfor %}
+
+                ],
+
+                y: [
+                {% for i in lessthan_dept_count %}
+                        {{i[1]}},
+                {% endfor %}
+                ],
+                
+                type: 'bar' ,
+                
+            }
+        ];
+
+Plotly.newPlot('barchartfordeptless20', data);
+</script>
+
+
+<script type="text/javascript">
+
+    var data = [
+            {
+            
+
+                x: [
+                    
+                    {% for i in dept_count%}
+                        '{{i[0]}}',
+                    {% endfor %}
+
+                ],
+
+                y: [
+                {% for i in dept_count %}
+                        {{i[1]}},
+                {% endfor %}
+                ],
+                
+                type: 'bar' ,
+                
+            }
+        ];
+
+Plotly.newPlot('barchartfordept', data);
+</script>
+{%  endblock %}

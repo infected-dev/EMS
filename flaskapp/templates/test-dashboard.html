@@ -1,0 +1,614 @@
+﻿<!doctype html>
+
+
+<html lang="en">
+
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description">
+        <meta name="author">
+
+        <link rel="icon" href="{{url_for('static', filename='images/lax.ico')}}">
+        <link rel="image" href="{{url_for('static', filename='css/DataTables-1.10.20/images/sort_asc.png')}}">
+        <link rel="image" href="{{url_for('static', filename='css/DataTables-1.10.20/images/sort_desc.png')}}">
+        <link rel="image" href="{{url_for('static', filename='css/DataTables-1.10.20/images/sort_both.png')}}">
+        <link rel="image" href="{{url_for('static', filename='css/DataTables-1.10.20/images/sort_asc_disabled.png')}}">
+        <link rel="image" href="{{url_for('static', filename='css/DataTables-1.10.20/images/sort_desc_disabled.png')}}">
+
+        <title>{% block pagetitle %} Data Entry And Reporting Application {% endblock %}</title>
+
+        <!-- Bootstrap core CSS -->
+        <link href="{{url_for('static', filename='css/bootstrap.min.css')}}" rel="stylesheet">
+
+        <!-- Custom styles for this template -->
+        <link href="{{url_for('static',filename='css/dashboard.css')}}" rel="stylesheet">
+        <link href="{{url_for('static', filename='css/dataTables.bootstrap.min.css')}}  " rel="stylesheet">
+        <link href="{{url_for('static',filename='css/print.min.css')}}" rel="stylesheet">
+        <link rel="stylesheet" media="print" href="{{url_for('static', filename='css/print-format.css')}}">
+        <link href="{{url_for('static', filename='css/animation.css')}}" rel="stylesheet">
+        <link href="{{url_for('static', filename='css/icon-set.css')}}" rel="stylesheet">
+        <link href="{{url_for('static', filename='css/datatables.css')}}" rel="stylesheet">
+        <link href="{{url_for('static', filename='css/datatables.min.css')}}" rel="stylesheet">
+        <link href="{{url_for('static', filename='css/datatables.min.css')}}" rel="stylesheet">
+        <link href="{{url_for('static', filename='css/jquery.dataTables.min.css')}}" rel="stylesheet">
+
+        {% block stylesheets %}
+
+        {% endblock %}
+
+
+        <style>
+            .btn-group {
+                margin-right: 12px;
+            }
+
+            body {
+                background-color: #d6d6d6;
+                overflow-x: hidden;
+                color: #;
+
+            }
+
+            a {
+                cursor: pointer;
+            }
+
+            .nav-link {
+                width: fit-content;
+            }
+
+            .nav-link:hover {
+                color: blue;
+
+            }
+
+            .dataTables_paginate {
+                text-align: end;
+            }
+
+            .paginate_button {
+                margin-right: 5px;
+                border: 1px solid black;
+                padding: 5px;
+                background-color: #e7e7e7;
+                color: black;
+                font-size: 15px;
+            }
+
+            .dataTables_filter label {
+                font-style: normal;
+                font-size: medium;
+                
+                
+            }
+            table.dataTable thead .sorting:after{
+                content: none;
+            }
+            table.dataTable thead .sorting:before{
+                content: none;
+            }
+            .dataTables_wrapper .dataTables_filter input {
+                display: block;
+                width: 100%;
+                height: calc(1.5em + 0.75rem + 2px);
+                padding: 0.375rem 0.75rem;
+                font-size: 1rem;
+                font-weight: 400;
+                line-height: 1.5;
+                color: #495057;
+                background-color: #fff;
+                background-clip: padding-box;
+                border: 1px solid #ced4da;
+                border-radius: 0.25rem;
+                transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+            }
+
+            #navbarSearchForm {
+                width: 70vw;
+            }
+
+            #sidenav-styles {
+                background-color: #1b1b19;
+
+            }
+
+            #sidenav-styles ul>li>a>span {
+                color: wheat;
+
+            }
+
+            .sidebar-heading span {
+                color: whitesmoke;
+
+            }
+
+            h3{
+                font-style: italic;
+            }
+        </style>
+
+
+        {% block styles %}
+
+        {% endblock %}
+
+    </head>
+
+    <body>
+
+        <!-- Main Top Nav Bar -->
+        <nav style="height: 60px;" class="fixed-top text-dark navbar navbar-dark bg-light flex-md-nowrap border-bottom ">
+            <p style="font-weight: 400;" class="p-3 lead h5">
+                <img class="mr-3" src="{{url_for('static', filename='images/favicon.png')}}" />V<span class="lead">isitor</span> M<span class="lead">anagement</span> S<span class="lead">ystem</span></p>
+              <form id="navbarSearchForm" class="navbar-form form-row  justify-content-center" role="search" action="{{url_for('search.search_main')}}">
+                <div class="col-md-5 col-sm-4">
+                    <div class="shadow input-group">   
+                        <div class="input-group-prepend"> 
+                        </div> 
+                        <input aria-describedby="searchicon" style="text-transform: uppercase;" name="text-search" type="text" class="form-control rounded" placeholder="Search By Name, Phone No, Vehicle No">
+                    </div>
+                        
+                </div>
+                <div class=" shadow">
+                        <input type="submit" class="btn btn-warning " value="Search">
+                        <p>{{current_user.plant_id}}</p>
+                </div> 
+            </form>
+        
+
+
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    {% if current_user.is_authenticated %}
+                    <a style="color: floralwhite;" class="font-weight-bold mr-2 btn btn btn-dark "
+                        href="{{url_for('auth.logout')}}">Sign out</a>
+                    {% endif %}
+                </li>
+            </ul>
+        </nav>
+
+
+        <!-- Main Side NavBar -->
+        <nav style="margin-top: 59px; " id="sidenav-main" class="collapse d-none d-md-block bg-light sidebar border-top">
+            <div id="sidenav-styles" class="sidebar-sticky rounded-top accordion">
+                {% if current_user.user_role == 2 or current_user.user_role == 4  %}
+                    
+                    <h3
+                        class="hvr-sweep-to-bottom  sidebar-heading d-flex justify-content-between align-items-center px-3 mt-1 mb-1 text-muted">
+
+                        <a data-target="#manage-links" data-toggle="collapse"
+                            class=" d-flex align-items-center text-muted p-1 text-decoration-none" href="#">
+                            <span style="font-size: 1.25rem;"> Manage</span>
+                            <i style="color:wheat;" class=" ml-3 fas fa-angle-down fa-2x "></i>
+                        </a>
+                    </h3>
+                    <ul id="manage-links" class="nav flex-column mb-2 collapse" data-parent="#sidenav-styles">
+                        <li class="hvr-underline-from-center nav-item">
+                            <a class="nav-link" href="{{url_for('admin.admin_main')}}">
+                                <span style="font-size: 1rem;" data-feather="file-text">Admin </span>
+
+                            </a>
+                        </li>
+                    </ul>
+                    
+
+                   
+                {% endif %}
+
+                {% if current_user.user_role == 1 or current_user.user_role == 2 or current_user.user_role == 3 %}
+                {% if current_user.user_plant == 3 %}
+
+                <h3
+                    class="hvr-sweep-to-bottom sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+
+                    <a data-toggle="collapse" data-target="#dataentry-links"
+                        class="d-flex align-items-center text-muted mt-2 p-1 text-decoration-none" href="#">
+                        <span style="font-size: 1.25rem;"> Data Entry</span>
+                        <i style="color:wheat;" class=" ml-3 fas fa-angle-down fa-2x"></i>
+                    </a>
+                </h3>
+                <ul data-parent="#sidenav-styles" id="dataentry-links" class="collapse nav flex-column mb-2">
+                    <li class="hvr-underline-from-center nav-item">
+                        <a class="nav-link" href="{{url_for('dataentry.post_format')}}">
+                            <span style="font-size: 1rem;" data-feather="file-text">Visitors</span>
+
+                        </a>
+                    </li>
+
+                    <li class="hvr-underline-from-center nav-item">
+                        <a class="nav-link" href="{{url_for('agencyapp.agency_main')}}">
+                            <span style="font-size: 1rem;" data-feather="file-text">Agency</span>
+                        </a>
+                        
+                    </li>
+                    <ul>
+                        <li><a style="color: white;" href="{{url_for('agencyapp.tools_agency')}}">Agency Toolboxs</a></li>
+                    </ul>   
+
+
+                    <li class="  nav-item">
+                        <a class=" nav-link" href="{{url_for('dataentry.post_vehicles')}}">
+                            <span style="font-size: 1rem;" data-feather="file-text">Vehicles</span>
+
+                        </a>
+                        <ul>
+                            <li class="nav-item"><a class="nav-link" href="{{url_for('dataentry.post_vehicles')}}"
+                                    style="color: white;">Outside Vehicles</a> </li>
+                            <li class="nav-item"><a class="nav-link" href="{{url_for('dataentry.post_mill')}}"
+                                    style="color: white;">Mill Vehicles </a> </li>
+                        </ul>
+                    </li>
+                </ul>
+
+                {% else %}
+                <h3
+                class="hvr-sweep-to-bottom sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+
+                <a data-toggle="collapse" data-target="#dataentry-links"
+                    class="d-flex align-items-center text-muted mt-2 p-1 text-decoration-none" href="#">
+                    <span style="font-size: 1.25rem;"> Data Entry</span>
+                    <i style="color:wheat;" class=" ml-3 fas fa-angle-down fa-2x"></i>
+                </a>
+            </h3>
+            <ul data-parent="#sidenav-styles" id="dataentry-links" class="collapse nav flex-column mb-2">
+                <li class="hvr-underline-from-center nav-item">
+                    <a class="nav-link" href="{{url_for('sachin.main_sachin')}}">
+                        <span style="font-size: 1rem;" data-feather="file-text">Visitors</span>
+
+                    </a>
+                </li>
+
+                <li class="hvr-underline-from-center nav-item">
+                    <a class="nav-link" href="{{url_for('agencyapp.agency_main')}}">
+                        <span style="font-size: 1rem;" data-feather="file-text">Agency</span>
+                    </a>
+                    
+                </li>
+                <ul>
+                    <li><a style="color: white;" href="{{url_for('agencyapp.tools_agency')}}">Agency Toolboxs</a></li>
+                </ul>   
+
+
+                <li class="  nav-item">
+                    <a class=" nav-link" href="{{url_for('dataentry.post_vehicles')}}">
+                        <span style="font-size: 1rem;" data-feather="file-text">Vehicles</span>
+
+                    </a>
+                    <ul>
+                        <li class="nav-item"><a class="nav-link" href="{{url_for('dataentry.post_vehicles')}}"
+                                style="color: white;">Outside Vehicles</a> </li>
+                        <li class="nav-item"><a class="nav-link" href="{{url_for('dataentry.post_mill')}}"
+                                style="color: white;">Mill Vehicles </a> </li>
+                    </ul>
+                </li>
+            </ul>
+                {% endif %}
+                {% endif %}
+
+                {% if current_user.user_role == 1 or current_user.user_role == 2 or current_user.user_role == 3 %}
+                {% if current_user.user_plant == 3 %}
+                <h3
+                    class="hvr-sweep-to-bottom sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+
+                    <a data-toggle="collapse" data-target="#editentry-links"
+                        class="d-flex align-items-center text-muted mt-2 p-1 text-decoration-none" href="#">
+                        <span style="font-size: 1.25rem;"> Edit Data</span>
+                        <i style="color:wheat;" class=" ml-3 fas fa-angle-down fa-2x"></i>
+                    </a>
+                </h3>
+                <ul data-parent="#sidenav-styles" id="editentry-links" class="collapse nav flex-column mb-2">
+                    <li class="hvr-underline-from-center nav-item">
+                        <a class="nav-link" href="{{url_for('edit.edit_visitor')}}">
+                            <span style="font-size: 1rem;" data-feather="file-text">Visitors</span>
+
+                        </a>
+                    </li>
+                    <li class="hvr-underline-from-center nav-item">
+                        <a class="nav-link" href="{{url_for('agencyapp.edit_agency')}}">
+                            <span style="font-size: 1rem;" data-feather="file-text">Agency</span>
+
+                        </a>
+                    </li>
+                    <li class="  nav-item">
+                        <a class=" nav-link" href="{{url_for('edit.edit_outsideVehicle')}}">
+                            <span style="font-size: 1rem;" data-feather="file-text">Vehicles</span>
+
+                        </a>
+                        <ul>
+                            <li class="nav-item"><a class="nav-link" href="{{url_for('edit.edit_outsideVehicle')}}"
+                                    style="color: white;">Outside Vehicles</a> </li>
+                            <li class="nav-item"><a class="nav-link" href="{{url_for('edit.edit_millVehicle')}}"
+                                    style="color: white;">Mill Vehicles </a> </li>
+                        </ul>
+                    </li>
+                </ul>
+                {% else %}
+
+                {% endif %}
+                {% endif %}
+
+                {% if current_user.user_role == 3 or current_user.user_role == 2 %}
+                {% if current_user.user_plant == 3 %}
+                <h3
+                    class="hvr-sweep-to-bottom sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+
+                    <a data-toggle="collapse" data-target="#report-links"
+                        class="d-flex align-items-center text-muted mt-2 p-1 text-decoration-none" href="#">
+                        <span style="font-size: 1.25rem;"> Reports</span>
+                        <i style="color:wheat;" class=" ml-3 fas fa-angle-down fa-2x"></i>
+                    </a>
+                </h3>
+                <ul data-parent="#sidenav-styles" id="report-links" class=" collapse nav flex-column mb-2">
+                    <li class="hvr-underline-from-center nav-item">
+                        <a class=" nav-link" href="{{url_for('report.report_main')}}">
+                            <span style="font-size: 1rem;" data-feather="file-text">Visitors</span>
+                            
+                        </a>
+                       
+                    </li>
+
+                    <ul class=" nav-item ">
+                        <li class=" text-white "><a href="{{url_for('report.frequent_visitor')}}" class="text-white">Frequent</a></li>
+                    </ul>
+
+                    <ul class=" nav-item mt-1">
+                        <li class=" text-white "><a href="{{url_for('report.department_visitors')}}" class="text-white">Department</a></li>
+                    </ul>
+
+                    <ul class=" nav-item mt-1">
+                        <li class=" text-white "><a href="{{url_for('report.employee_visitors')}}" class="text-white">Employee</a></li>
+                    </ul>
+                    <ul class=" nav-item mt-1">
+                        <li class=" text-white "><a href="{{url_for('report.vendor_visitor')}}" class="text-white">Vendor</a></li>
+                    </ul>
+
+                    <li class="hvr-underline-from-center nav-item">
+                        <a class=" nav-link" href="{{url_for('agencyapp.report_agency')}}">
+                            <span style="font-size: 1rem;" data-feather="file-text">Agency</span>
+                            
+                        </a>
+                       
+                    </li>
+
+                    <ul class=" nav-item ">
+                        <li class=" text-white "><a href="{{url_for('agencyapp.freq_visitor')}}" class="text-white">Frequent</a></li>
+                    </ul>
+
+                    <ul class=" nav-item mt-1">
+                        <li class=" text-white "><a href="#" class="text-white">Location</a></li>
+                    </ul>
+
+                    <ul class=" nav-item mt-1">
+                        <li class=" text-white "><a href="#" class="text-white">Supervisor</a></li>
+                    </ul>
+                    <ul class=" nav-item mt-1">
+                        <li class=" text-white "><a href="#" class="text-white">Agency Master</a></li>
+                    </ul>
+
+                     <ul class=" nav-item mt-1">
+                        <li class=" text-white "><a href="#" class="text-white">Work Type</a></li>
+                    </ul>
+
+                    <li class="hvr-underline-from-center nav-item">
+                        <a class="nav-link" href="{{url_for('report.report_vehicles')}}">
+                            <span style="font-size: 1rem;" data-feather="file-text">Vehicles</span>
+
+                        </a>
+                    </li>
+
+                    <ul class="text-white">
+                        <li class=""><a class="text-white" href="{{url_for('report.report_vehicles')}}"
+                               ">Outside </a></li>
+
+                               <ul class=" nav-item ">
+                                <li class=" text-white "><a href="{{url_for('report.dept_outsidevehicle')}}" class="text-white">Department</a></li>
+                            </ul>
+
+                            <ul class=" nav-item ">
+                                <li class=" text-white "><a href="{{url_for('report.vendor_outsidevehicle')}}" class="text-white">Vendor</a></li>
+                            </ul>
+                        <li class=" "><a class="text-white" href="{{url_for('report.mill_report')}}"
+                                ">Mill </a></li>
+                    </ul>
+                </ul>
+                <h3
+                    class="hvr-sweep-to-bottom sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+
+                    <a data-target="#dashboard-links" data-toggle="collapse"
+                        class="d-flex align-items-center text-muted mt-2 p-1 text-decoration-none" href="#">
+                        <span style="font-size: 1.25rem;"> DashBoard </span>
+                        <i style="color:wheat;" class=" ml-3 fas fa-angle-down fa-2x"></i>
+                    </a>
+                </h3>
+                <ul data-parent="#sidenav-styles" id="dashboard-links" class="collapse nav flex-column mb-2 ">
+                    <li class="hvr-underline-from-center nav-item">
+                        <a class="nav-link" href="{{url_for('report.dashboard')}}">
+                            <span style="font-size: 1rem;" data-feather="file-text">Visitors</span>
+
+                        </a>
+                    </li>
+                    <li class="hvr-underline-from-center nav-item">
+                        <a class="nav-link" href="{{url_for('report.dashboard')}}">
+                            <span style="font-size: 1rem;" data-feather="file-text">Agency</span>
+
+                        </a>
+                    </li>
+                    <li class="hvr-underline-from-center nav-item">
+                        <a class="nav-link" href="{{url_for('report.dashboard_vehicle')}}">
+                            <span style="font-size: 1rem;" data-feather="file-text">Vehicles</span>
+
+                        </a>
+                    </li>
+                </ul>
+                {% else %}
+
+                {%  endif%}
+                {% endif %}
+            </div>
+        </nav>
+
+
+        <!--Main Section-->
+        <div class="row container-fulid">
+            <!-- Start of Main -->
+            <main style="margin-top: 59px; margin-left: 190px;" role="main" class="col  col-lg-10 pt-3 px-4">
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                {% for message in messages %}
+                <!-- Then put toasts within -->
+                <div class="toast text-monospace bg-info" role="alert" aria-live="assertive" aria-atomic="true"
+                    data-delay="3000" style="z-index:1; position:absolute; top:1rem; right: 1rem;">
+                    <div class="toast-header">
+                        <strong class="mr-auto">Alert</strong>
+                        <small class="text-muted">just now</small>
+                        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="toast-body">
+                        {{message}}
+                    </div>
+                </div>
+                {% endfor %}
+                {% endif %}
+                {% endwith %}
+                
+                <div style="margin: 2px; border-bottom: black;" class="">
+                    <h1 class="h2 mb-4 text-center">{% block title %}Main Page{% endblock %}{% block linktitle%}
+                        {% endblock %}</h1>
+                </div>
+
+                {% block body %}
+
+                {% endblock %}
+                
+
+            </main>
+            <!-- End of Main -->
+
+        </div>
+
+        
+
+        <!-- Bootstrap core JavaScript and others
+        ================================================== -->
+        <!-- Placed at the end of the document so the pages load faster -->
+
+        <script src="{{url_for('static', filename='js/jquery-3.4.js')}}"></script>
+        <script src="{{url_for('static', filename='js/popper.min.js')}}"></script>
+        <script src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
+        <script src="{{url_for('static', filename='js/print.min.js')}}"></script>
+        <script src="{{url_for('static', filename='js/jquery.dataTables.min.js')}}"></script>
+        <script src="{{url_for('static', filename='js/js.cookie.js')}}"></script>
+        <script src="{{url_for('static', filename='js/js.cookie.min.js')}}"></script>
+        <script src="{{url_for('static',filename='js/buttons.print.min.js')}}"></script>
+        <script src="{{url_for('static',filename='js/Chart.js')}}"></script>
+        <script src="{{url_for('static',filename='js/Chart.min.js')}}"></script>
+        <script src="{{url_for('static', filename='js/updateajax.js')}}"> </script>
+        <script src="{{url_for('static', filename='js/datatables.js')}}"></script>
+        <script src="{{url_for('static', filename='js/datatables.min.js')}}"></script>
+        <script src="{{url_for('static', filename='js/moment.js')}}"></script>
+        <script src="{{url_for('static', filename='js/plotly.min.js')}}"></script>
+
+
+        <!-- Icons -->
+        <script>
+            $('.toast').toast('show');
+        </script>
+
+
+        <!--Rememeber collpase item -->
+        <script>
+            $(document).ready(function () {
+                $('button').click(function () {
+                    localStorage.setItem('collapseItem', $(this).attr('data-target'));
+                });
+
+                var collapseItem = localStorage.getItem('collapseItem');
+                if (collapseItem) {
+                    $(collapseItem).collapse('show')
+                }
+            })
+        </script>
+
+        <!-- Something Baout URLS, dont know yet-->
+        <script>
+            $(function () {
+                var current = location.pathname;
+                $('#mainsidebar-report,#mainsidebar li a').each(function () {
+                    var $this = $(this);
+                    // if the current path is like this link, make it active
+                    if ($this.attr('href').indexOf(current) !== -1) {
+                        $this.addClass('active');
+                    }
+                })
+            })
+        </script>
+
+        <!--DataTable for all mill vehicles report-->
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('#all-millvehiclereport,#all-vehiclereport').DataTable({
+                    dom: 'Bfrtip',
+                    buttons: [
+                        'print'
+                    ],
+                    initComplete: function () {
+                        this.api().columns().every(function () {
+                            var column = this;
+                            var select = $('<select><option value=""></option></select>')
+                                .appendTo($(column.footer()).empty())
+                                .on('change', function () {
+                                    var val = $.fn.dataTable.util.escapeRegex(
+                                        $(this).val()
+                                    );
+
+                                    column
+                                        .search(val ? '^' + val + '$' : '', true, false)
+                                        .draw();
+                                });
+
+                            column.data().unique().sort().each(function (d, j) {
+                                select.append('<option value="' + d + '">' + d + '</option>')
+                            });
+                        });
+                    }
+                });
+            });
+        </script>
+
+
+        <!--Toast Notification Animation-->
+        <script>
+            window.setTimeout(function () {
+                $(".toast").fadeTo(500, 0).slideUp(500, function () {
+                    $(this).remove();
+                });
+            }, 2000);
+        </script>
+        
+        <script>
+                var my_options = $("#emp option");
+                var selected = $("#emp").val();
+        
+                my_options.sort(function(a,b) {
+                if (a.text > b.text) return 1;
+                if (a.text < b.text) return -1;
+                return 0
+        })
+        
+            $("#emp").empty().append( my_options );
+            $("#emp").val(selected);
+        
+               
+            </script>
+        <!-- Scripts that are on extended pages-->
+        {% block script  %}
+
+        {% endblock %}
+       
+    </body>
+
+</html>

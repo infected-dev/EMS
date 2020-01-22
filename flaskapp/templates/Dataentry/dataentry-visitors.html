@@ -1,0 +1,234 @@
+{% extends 'test-dashboard.html' %}
+
+<!-- CSS Style Block -->
+{%block styles%}
+<style>
+    table tbody {
+        font-size: 1rem;
+    }
+
+    .form-group {
+        margin-right: 5px;
+        box-shadow: brown;
+    }
+
+    #visitorform {
+        margin-left: 5px;
+    }
+</style>
+{%endblock%}
+<!-- End of CSS Block-->
+
+
+<!--Page Title Block-->
+{% block pagetitle %}
+Visitor Data Entry
+{% endblock %}
+<!-- End of Page Title BLock-->
+
+
+<!--Title Block-->
+{% block title %}
+Visitor Data Entry
+{% endblock %}
+<!--End of Title Block-->
+
+
+{% block linktitle %}
+
+{% endblock %}
+
+{% block body %}
+<div id="maincontainer" class="container-fulid">
+
+    <!-- Start of Visitor Data Entry Form-->
+    <div class="row mb-2">
+
+
+        <div class="col-3 ">
+               
+            <div  class="card ">
+                <h4 class=" card-header text-center">Data Entry</h4>
+                <div class="card-body p-2" >
+
+                    <form id="visitorform" action="/test-postformat/visitor" method="POST" class="form ">
+                        <!--Entry Date Input-->
+                        <div class="form-row form-group mb-2 ">
+                                <label class="col-form-label" for="entrydate">Date:</label>
+                                
+                                        <input type="date" class="form-control" id="date" name="entrydate" value="{{today_date}}" autofocus="" required="">
+                                
+                            </div>
+        
+                        <div class="form-row form-group mb-2">
+                            <label class="sr-only" for="name">Visitor Name:</label>
+                                    <input autocomplete="off" list="visitorlist" style="text-transform:uppercase;" placeholder="Visitor Name" class="form-control" id="name" name="visitorname" required="">
+                                    <datalist id="visitorlist"> 
+
+                                            {% for v in visitors %}
+                                                <option id="vilist{{v.id}}" data-p="{{v.place_from}}" data-attribute="{{v.contact}}" value="{{v.name}}">{{v.id}}-{{v.contact}} </option>
+                                            {% endfor %}
+    
+                                        </datalist>
+                        </div>
+                        
+                        
+                        <!-- Visitor Contact Input-->
+                        <div class="form-row form-group mb-2">
+                            <label class="sr-only" for="visitorcontact">Contact No: </label>
+                            <input id="contact" name="visitorcontact" type="tel" class="form-control" placeholder="Visitor Contact No." maxlength="10">
+                        </div>
+        
+                        <!--Visitor Compnay -->
+                        <div class="form-row form-group mb-2">
+                            <label class="sr-only" for="visitorcompnay">Company From: </label>
+                            <input id="placefrom" style="text-transform:uppercase;" name="visitorcompany" class="form-control" type="text" placeholder="Visitor Company" required="">
+                        </div>
+        
+                        <!--Visiting Employee Input-->
+                        <div class="form-row form-group mb-2">
+                            <label class="sr-only">Visiting Employee</label>
+                            <select id="emp" class="form-control" name="visiting_employee">
+                                    {% for emp in employees %}	                             
+                                        <option value={{emp.id}}>{{emp.employee_name}}</option>	                       
+                                    {% endfor %}
+                            </select>
+                        </div>
+        
+                        <!--Compnay From Input-->
+                        <div class="form-group mb-2">
+                            <label class="sr-only" for="visitingpurpose">Visiting Purpose: </label>
+                            <input required style="text-transform:uppercase;" name="visitingpurpose" class="form-control" type="text" placeholder="Visiting Purpose">
+                        </div>
+
+
+                        <div class="form-row form-group mb-2">
+                            <label class="sr-only" for="extras">Extra:</label>
+                            <input id="extras" name="extras" class="form-control" type="number" placeholder="EXTRAS" >
+                        </div>
+
+                        <div class="form-group form-row mb-2">
+                                
+                                <label class="col-form-label" for="intime">In Time:</label>
+                               
+                                        <input name="intime" class="form-control" type="time" value="{{today_time}}">
+                                
+                            </div>
+                       
+                        <div class="form-group mb-2">
+                            <input type="submit" class="btn btn-primary btn-block">
+                        </div>
+                       
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    
+
+
+   
+        <div class="col ml-3 ">
+            <div class="card">
+                <h4 class="card-header text-center">Update Visitor Data</h4>
+                <!-- Visitor entry table Comment-->
+            
+                <div class=" table-responsive card-body">
+                    <table id="VisitorPostTable" class="table table-stripped table-sm">
+                        <thead class="thead">
+
+                        </thead>
+
+                        <tbody>
+                            {% for visitor in today_visitors %}
+                            <tr attributes="{{visitor.id}}" id="datasection{{visitor.id}}">
+                                <td class=""></td>
+                                {% if visitor.extras == 0 or None %}
+                                <td>{{visitor.a_timelog.name.title()}}</td>
+                                {% else %}
+                                <td>{{visitor.a_timelog.name.title()}}+{{visitor.extras}}</td>
+                                {% endif %}
+                                <td>{{visitor.a_timelog.contact}}</td>
+                                <td>{{visitor.a_timelog.place_from.title()}}</td>
+                                <td>{{visitor.active.visited_employee.employee_name.title()}}</td>
+                                <td>{{visitor.in_time}}</td>
+
+                                <td>
+                                    <input id="vi_id{{visitor.id}}" name="vi_id" type="hidden" value="{{visitor.id}}">
+                                    <input class="vupdateout form-control form-control-sm" attribute="{{visitor.id}}" type="time"
+                                        value="{{visitor.out_time}}" id="exittime{{visitor.id}}" name="exittime">
+                                </td>
+                                
+                                <td><button attributes="{{visitor.id}}" type="submit" id="button{{visitor.id}}"
+                                        class="update btn btn-warning btn-sm">Update</button></td>
+
+                                <td><form action="{{url_for('dataentry.visitors_delete')}}" method="POST">
+                                    <input type="hidden" name="vi_id" value="{{visitor.id}}">
+                                    <input type="hidden" name="page" value="dataentry">
+                                    <input value="Delete" class="btn btn-danger btn-sm" type="submit">
+                                </form></td>
+
+                                <td><form action="{{url_for('report.printslip')}}" method="POST">
+                                        <input id="vi_id{{visitor.id}}" name="vi_id" type="hidden" value="{{visitor.id}}">
+                                        <input id="serialno" name="serialno" type="hidden" value="">
+                                        <button attributes="{{visitor.id}}" type="submit" id="button"
+                                        class="btn btn-info btn-sm">Print</button>
+
+                                </form>
+                                   
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                </div>
+           
+            </div>
+        </div>
+    
+</div>
+<!-- End of Visitor Form-->
+{% endblock %}
+
+
+
+{% block script %}
+
+<script>
+
+	$('form #button').click(function(){
+		var serial = $(this).closest('tr').children('td:first').text()
+		$('form #serialno').val(serial);
+	});
+
+</script>
+
+    <script>
+        $('input[name=visitorname]').focusout(function(){
+          
+           var val = $(this).val();
+           var number = $('#visitorlist [value="' + val + '"]').data('attribute');
+           
+           $('#contact').val(number)
+           var place = $('#visitorlist [value="' + val + '"]').data('p');
+           $('#placefrom').val(place)
+          
+           
+        });
+    </script>
+
+
+<script type="text/javascript">
+    var addSerialNumber = function(){
+        $('#VisitorPostTable tr').each(function(index){
+            $(this).find('td:nth-child(1)').html(index+1);
+        });
+    };
+    
+    addSerialNumber();
+</script>
+
+
+
+{% endblock %}

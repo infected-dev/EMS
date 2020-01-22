@@ -1,0 +1,582 @@
+<html>
+    <head>
+            
+            <link href="{{url_for('static', filename='css/dataTables.bootstrap.min.css')}}  " rel="stylesheet">
+            <link href="{{url_for('static',filename='css/print.min.css')}}" rel="stylesheet">
+            <link href="{{url_for('static', filename='css/bootstrap.min.css')}}" rel="stylesheet">
+            <link href="{{url_for('static', filename='css/printstyles.css')}}" rel="stylesheet" media="print">
+        <style>
+           
+            body{
+               
+                margin-left: 5px;
+                margin-right: 5px;
+                font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+
+            }
+            tbody{
+                counter-reset: Serial;  
+            }
+            .auto-index td:first-child:before
+            {
+              counter-increment: Serial;      /* Increment the Serial counter */
+              content: counter(Serial); /* Display the counter */
+            }
+            thead {display: table-header-group;}
+            tfoot {display: table-header-group;}
+
+           @media print{
+               body {
+                   margin : 5mm 5mm 5mm 5mm;
+                   
+                   
+               }
+
+               table tbody{
+                   font-size : small;
+               }
+                tr td {
+                white-space: nowrap;
+            }
+                p strong {
+                    page-break-before: always;
+                }
+           }
+            
+           
+        </style>
+        </style>
+    </head>
+    <body>
+        <div class="container-fulid P-1">   
+                <div class="printclass">
+                        <div id="header" class="text-center">
+                            <h5 class="mb-0">Siddhi Vinayak Knots and Prints Pvt. Ltd.</h5>
+                            <p class=" mb-0 text-muted">A-26 To A-32, "Central Park", G.I.D.C Pandesra, SURAT-394221.
+                                </p>
+                                <h5 class="mb-0 mt-2">{{title}}</h5>
+                        </div>
+
+                        {% if title == 'Agency Records' %}
+                        <div class="mr-2 mb-2 row">
+                             <div class="text-right ml-4">
+                                 {% if date %}
+                                    <p class="pagebreak"><strong> Date: {{date.strftime('%d/%m/%Y')}}</strong></p>
+                                {% endif %}
+                            </div>
+                            <div class="col text-right">
+                                   <strong >Agency Count:<span class="ml-1">{{count}}
+                                    </strong>
+                                    <strong class="ml-2">Extras:<span class="ml-1">{{extras}}</span></strong>
+                                    <strong class="ml-2">Total:<span class="ml-1">{{count+extras}}  </span></strong>
+                            </div>
+                        </div>
+
+                        <div id='tableclass' class="m auto-index">
+                            <table class="mb-4 table table-sm table-bordered">
+                                <thead >
+                                    <tr class="text-center">
+                                        <th>Sr. No.</th>
+                                        <th>Order No</th>
+                                        <th>Agency Name</th>
+                                        
+                                        <th>Work Type</th>
+                                        <th>Head</th>
+                                        <th>Extras</th>
+                                        <th>In Time</th>
+                                        <th>Out Time</th>
+                                        <th>Duration</th>
+                                        <th>Supervisor</th>
+                                        <th>Location</th>
+                                        <th>Vehicle</th>
+                                        <th>Remarks</th>
+                                    </tr>
+                                </thead>
+                                
+                                <tbody>
+                                    {% for q in logs | sort(attribute='in_time') %}
+                                     <tr>
+                                            <td></td>
+                                            <td>{{q.order}}</td>
+                                            <td>{{q.agenm.agency_name}}</td>
+                                            <td>{{q.wtyp.work_type}}</td>
+                                            <td>{{q.contact_person}}</td>
+                                            <td>{{q.manpower}}</td>
+
+                                            {% if q.in_time %}
+                                            <td>{{q.in_time.strftime('%H:%M')}}</td>
+                                            {% else %}
+                                            <td></td>
+                                            {% endif %}
+
+                                            {% if q.out_time %}
+                                            <td>{{q.out_time.strftime('%H:%M')}}</td>
+                                            {% else %}
+                                            <td></td>
+                                            {% endif %}
+
+                                            <td>{{q.duration}}</td>
+                                            <td>{{q.superm.supervisor_name}}</td>
+                                            <td>{{q.locationm.location_name}}</td>
+                                            <td>{{q.vehicle_no}}</td>
+                                            <td>{{q.remarks}}</td>
+                                    </tr>
+                                    {% endfor %}    
+                                </tbody>
+                            </table>
+                        </div>
+                        {% endif %} 
+
+
+                        
+
+                        {% if title == 'Agency Records Sorted by Location' %}
+                        <div class="mr-2 mb-2 row">
+                            <div class="text-right ml-4">
+                                {% if date %}
+                                   <strong> Date: {{date.strftime('%d/%m/%Y')}}</strong>
+                               {% endif %}
+                           </div>
+                            <div class="col text-right">
+                                <strong >Agency Count:<span class="ml-1">{{count}}
+                                </strong>
+                                <strong class="ml-2">Extras:<span class="ml-1">{{extras}}</span></strong>
+                                <strong class="ml-2">Total:<span class="ml-1">{{count+extras}}  </span></strong>
+                            </div>
+                        </div>
+
+                        <div id='tableclass' class="m">
+                            <table class="mb-4 table table-sm table-bordered auto-index">
+                                <thead >
+                                    <tr class="text-center">
+                                        <th>Sr. No.</th>
+                                        <th>Order No</th>
+                                        <th>Agency Name</th>
+                                        
+                                        <th>Work Type</th>
+                                        <th>Head</th>
+                                        <th>Extras</th>
+                                        <th>In Time</th>
+                                        <th>Out Time</th>
+                                        <th>Duration</th>
+                                        <th>Supervisor</th>
+                                        <th>Location</th>
+                                        <th>Vehicle</th>
+                                        <th>Remarks</th>
+                                    </tr>
+                                </thead>
+                                
+                                <tbody>
+                                    {% for q in logs%}
+                                     <tr>
+                                            <td></td>
+                                            <td>{{q.order}}</td>
+                                            <td>{{q.agenm.agency_name}}</td>
+                                            <td>{{q.wtyp.work_type}}</td>
+                                            <td>{{q.contact_person}}</td>
+                                            <td>{{q.manpower}}</td>
+
+                                            {% if q.in_time %}
+                                            <td>{{q.in_time.strftime('%H:%M')}}</td>
+                                            {% else %}
+                                            <td></td>
+                                            {% endif %}
+
+                                            {% if q.out_time %}
+                                            <td>{{q.out_time.strftime('%H:%M')}}</td>
+                                            {% else %}
+                                            <td></td>
+                                            {% endif %}
+
+                                            <td>{{q.duration}}</td>
+                                            <td>{{q.superm.supervisor_name}}</td>
+                                            <td>{{q.locationm.location_name}}</td>
+                                            <td>{{q.vehicle_no}}</td>
+                                            <td>{{q.remarks}}</td>
+                                    </tr>
+                                    {% endfor %}    
+                                      
+                                </tbody>
+                            </table>
+                        </div>
+                        {% endif %}
+
+                        {% if title == 'Agency Report By Location' %}
+                        <div class="mr-2 mb-2 row">
+                            <div class="text-right ml-4">
+                                {% if date %}
+                                   <strong> Date: {{date.strftime('%d/%m/%Y')}}</strong>
+                               {% endif %}
+                           </div>
+                            <div class="col text-right">
+                                <strong >Agency Count:<span class="ml-1">{{count}}
+                                </strong>
+                                <strong class="ml-2">Extras:<span class="ml-1">{{extras}}</span></strong>
+                                <strong class="ml-2">Total:<span class="ml-1">{{count+extras}}  </span></strong>
+                            </div>
+                        </div>
+
+                        <div id='tableclass' class="m">
+                            <table class="mb-4 table table-sm table-bordered auto-index">
+                                <thead >
+                                    <tr class="text-center">
+                                        <th>#</th>
+                                        <th>Order No</th>
+                                        <th>Agency Name</th>
+                                        
+                                        <th>Work Type</th>
+                                        <th>Head</th>
+                                        <th>Extras</th>
+                                        <th>In Time</th>
+                                        <th>Out Time</th>
+                                        <th>Duration</th>
+                                        <th>Supervisor</th>
+                                        <th>Location</th>
+                                        <th>Vehicle</th>
+                                        <th>Remarks</th>
+                                    </tr>
+                                </thead>
+                                
+                                <tbody>
+                                    {% for q in logs  %}
+                                     <tr>
+                                            <td></td>
+                                            <td>{{q.order}}</td>
+                                            <td>{{q.agenm.agency_name}}</td>
+                                            <td>{{q.wtyp.work_type}}</td>
+                                            <td>{{q.contact_person}}</td>
+                                            <td>{{q.manpower}}</td>
+
+                                            {% if q.in_time %}
+                                            <td>{{q.in_time.strftime('%H:%M')}}</td>
+                                            {% else %}
+                                            <td></td>
+                                            {% endif %}
+
+                                            {% if q.out_time %}
+                                            <td>{{q.out_time.strftime('%H:%M')}}</td>
+                                            {% else %}
+                                            <td></td>
+                                            {% endif %}
+
+                                            <td>{{q.duration}}</td>
+                                            <td>{{q.superm.supervisor_name}}</td>
+                                            <td>{{q.locationm.location_name}}</td>
+                                            <td>{{q.vehicle_no}}</td>
+                                            <td>{{q.remarks}}</td>
+                                    </tr>
+                                    {% endfor %}    
+                                      
+                                </tbody>
+                            </table>
+                        </div>
+                        {% endif %}
+
+                        {% if title == 'Agency Report' %}
+                        <div class="mr-2 mb-2 row">
+                            
+                            <div class="col text-right">
+                                <strong >Agency Count:<span class="ml-1">{{count}}
+                                </strong>
+                                <strong class="ml-2">Extras:<span class="ml-1">{{extras}}</span></strong>
+                                <strong class="ml-2">Total:<span class="ml-1">{{count+extras}}  </span></strong>
+                            </div>
+                        </div>
+
+                        <div id='tableclass' class="m auto-index">
+                            <table class="mb-4 table table-sm table-bordered">
+                                <thead >
+                                    <tr class="text-center">
+                                        <th>#</th>
+                                        <th>Date</th>
+                                        <th>Order No</th>
+                                        <th>Agency Name</th>
+                                        
+                                        <th>Work Type</th>
+                                        <th>Head</th>
+                                        <th>Extras</th>
+                                        <th>In Time</th>
+                                        <th>Out Time</th>
+                                        <th>Duration</th>
+                                        <th>Supervisor</th>
+                                        <th>Location</th>
+                                        <th>Vehicle</th>
+                                        <th>Remarks</th>
+                                    </tr>
+                                </thead>
+                                
+                                <tbody>
+                                    {% for q in logs  %}
+                                     <tr>
+                                            <td></td>
+                                            <td>{{q.date.strftime("%d-%m-%Y")}}</td>
+                                            <td>{{q.order}}</td>
+                                            <td>{{q.agenm.agency_name}}</td>
+                                            <td>{{q.wtyp.work_type}}</td>
+                                            <td>{{q.contact_person}}</td>
+                                            <td>{{q.manpower}}</td>
+
+                                            {% if q.in_time %}
+                                            <td>{{q.in_time.strftime('%H:%M')}}</td>
+                                            {% else %}
+                                            <td></td>
+                                            {% endif %}
+
+                                            {% if q.out_time %}
+                                            <td>{{q.out_time.strftime('%H:%M')}}</td>
+                                            {% else %}
+                                            <td></td>
+                                            {% endif %}
+
+                                            <td>{{q.duration}}</td>
+                                            <td>{{q.superm.supervisor_name}}</td>
+                                            <td>{{q.locationm.location_name}}</td>
+                                            <td>{{q.vehicle_no}}</td>
+                                            <td>{{q.remarks}}</td>
+                                    </tr>
+                                    {% endfor %}    
+                                      
+                                </tbody>
+                            </table>
+                        </div>
+                        {% endif %}
+                        
+                        {% if title == 'Consolidated Agency Report' %}
+                        <div class="col text-center ">
+                            <p><strong>{{date.strftime("%d-%b-%Y")}}</strong> to <strong>{{date_2.strftime("%d-%b-%Y")}}</strong><span class="ml-2">( {{delta.days + 1}} Days</span> )</p>
+                        </div>
+                        <div class="col text-right">
+                            <strong >Agency Count:<span class="ml-1">{{count}}
+                            </strong>
+                            <strong class="ml-2">Extras:<span class="ml-1">{{extras}}</span></strong>
+                            <strong class="ml-2">Total:<span class="ml-1">{{count+extras}}  </span></strong>
+                        </div>
+                        <div class="mr-2 mb-2 row">
+                            {% for group in logs | groupby('date') %}   
+                            <div class="ml-4">
+
+                                
+                                   <p style="page-break-before: always;"><strong class="pagebreak"> Date: {{group.grouper.strftime('%d/%m/%Y')}}</strong> <em>(Total :  {{group.list | length}})</em></p>      
+                             </div>
+                            
+                        </div>
+
+                        <div id='tableclass' class="m">
+                            <table class="mb-4 table table-sm table-bordered">
+                                <thead>
+                                    <tr class="text-center">
+                                        <th>#</th>
+                                        <th>Order No</th>
+                                        <th>Agency Name</th>
+                                        
+                                        <th>Work Type</th>
+                                        <th>Head</th>
+                                        <th>Extras</th>
+                                        <th>In Time</th>
+                                        <th>Out Time</th>
+                                        <th>Duration</th>
+                                        <th>Supervisor</th>
+                                        <th>Location</th>
+                                        <th>Vehicle</th>
+                                        <th>Remarks</th>
+                                    </tr>
+                                </thead>
+                                
+                                <tbody>
+                                    {% for q in group.list  %}
+                                     <tr class="auto-index">
+                                            <td></td>
+                                            <td>{{q.order}}</td>
+                                            <td>{{q.agenm.agency_name}}</td>
+                                            <td>{{q.wtyp.work_type}}</td>
+                                            <td>{{q.contact_person}}</td>
+                                            <td>{{q.manpower}}</td>
+
+                                            {% if q.in_time %}
+                                            <td>{{q.in_time.strftime('%H:%M')}}</td>
+                                            {% else %}
+                                            <td></td>
+                                            {% endif %}
+
+                                            {% if q.out_time %}
+                                            <td>{{q.out_time.strftime('%H:%M')}}</td>
+                                            {% else %}
+                                            <td></td>
+                                            {% endif %}
+
+                                            <td>{{q.duration}}</td>
+                                            <td>{{q.superm.supervisor_name}}</td>
+                                            <td>{{q.locationm.location_name}}</td>
+                                            <td>{{q.vehicle_no}}</td>
+                                            <td>{{q.remarks}}</td>
+                                    </tr>
+                                    {% endfor %}    
+                                      
+                                </tbody>
+                            </table>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+
+                        {% if title == 'Consolidated Agency Report by location' %}
+                        <div class=""><h5 class="mt-1 text-center">{{loc.location_name}}</h5></div>
+                        <div class="col text-center">
+                            <p><strong>{{date.strftime("%d-%b-%Y")}}</strong> to <strong>{{date_2.strftime("%d-%b-%Y")}}</strong><span class="ml-2">( {{delta.days + 1}} Days</span> )</p>
+                        </div>
+                        
+                        <div class="mr-2 mb-2 row">
+                            {% for group in logs | groupby('date') %}   
+                            <div class="ml-4">
+
+                               
+                                   <p style="page-break-before:always"><strong class="pagebreak"> Date: {{group.grouper.strftime('%d/%m/%Y')}} <em>(Total :  {{group.list | length}})</em> </strong></p>
+                                   <div class=""><h5 class="mt-2 text-center">{{loc.location_name}}</h5></div>      
+                               
+                             </div>
+                            
+                        </div>
+
+                        <div id='tableclass' class="m">
+                            <table class="mb-4 table table-sm table-bordered">
+                                <thead>
+                                    <tr class="text-center">
+                                        <th>#</th>
+                                        <th>Order No</th>
+                                        <th>Agency Name</th>
+                                        
+                                        <th>Work Type</th>
+                                        <th>Head</th>
+                                        <th>Extras</th>
+                                        <th>In Time</th>
+                                        <th>Out Time</th>
+                                        <th>Duration</th>
+                                        <th>Supervisor</th>
+                                        
+                                        <th>Vehicle</th>
+                                        <th>Remarks</th>
+                                    </tr>
+                                </thead>
+                                
+                                <tbody>
+                                    {% for q in group.list  %}
+                                     <tr class="auto-index">
+                                            <td></td>
+                                            <td>{{q.order}}</td>
+                                            <td>{{q.agenm.agency_name}}</td>
+                                            <td>{{q.wtyp.work_type}}</td>
+                                            <td>{{q.contact_person}}</td>
+                                            <td>{{q.manpower}}</td>
+
+                                            {% if q.in_time %}
+                                            <td>{{q.in_time.strftime('%H:%M')}}</td>
+                                            {% else %}
+                                            <td></td>
+                                            {% endif %}
+
+                                            {% if q.out_time %}
+                                            <td>{{q.out_time.strftime('%H:%M')}}</td>
+                                            {% else %}
+                                            <td></td>
+                                            {% endif %}
+
+                                            <td>{{q.duration}}</td>
+                                            <td>{{q.superm.supervisor_name}}</td>
+                                            
+                                            <td>{{q.vehicle_no}}</td>
+                                            <td>{{q.remarks}}</td>
+                                    </tr>
+                                    {% endfor %}    
+                                      
+                                </tbody>
+                            </table>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+
+                        {% if title == 'Supervisor Wise Report' %}
+                        <div class="mr-2 mb-2 row">
+                            
+                            <div class="col text-right">
+                                <strong >Agency Count:<span class="ml-1">{{count}}
+                                </strong>
+                                <strong class="ml-2">Extras:<span class="ml-1">{{extras}}</span></strong>
+                                <strong class="ml-2">Total:<span class="ml-1">{{count+extras}}  </span></strong>
+                            </div>
+                        </div>
+
+                        <div id='tableclass' class="m">
+                            <table class="mb-4 table table-sm table-bordered">
+                                <thead >
+                                    <tr class="text-center">
+                                        <th>#</th>
+                                        <th>Date</th>
+                                        <th>Order No</th>
+                                        <th>Agency Name</th>
+                                        
+                                        <th>Work Type</th>
+                                        <th>Head</th>
+                                        <th>Extras</th>
+                                        <th>In Time</th>
+                                        <th>Out Time</th>
+                                        <th>Duration</th>
+                                        <th>Supervisor</th>
+                                        <th>Location</th>
+                                        <th>Vehicle</th>
+                                        <th>Remarks</th>
+                                    </tr>
+                                </thead>
+                                
+                                <tbody>
+                                    {% for q in logs  %}
+                                     <tr>
+                                            <td></td>
+                                            <td>{{q.date.strftime("%d-%m-%Y")}}</td>
+                                            <td>{{q.order}}</td>
+                                            <td>{{q.agenm.agency_name}}</td>
+                                            <td>{{q.wtyp.work_type}}</td>
+                                            <td>{{q.contact_person}}</td>
+                                            <td>{{q.manpower}}</td>
+
+                                            {% if q.in_time %}
+                                            <td>{{q.in_time.strftime('%H:%M')}}</td>
+                                            {% else %}
+                                            <td></td>
+                                            {% endif %}
+
+                                            {% if q.out_time %}
+                                            <td>{{q.out_time.strftime('%H:%M')}}</td>
+                                            {% else %}
+                                            <td></td>
+                                            {% endif %}
+
+                                            <td>{{q.duration}}</td>
+                                            <td>{{q.superm.supervisor_name}}</td>
+                                            <td>{{q.locationm.location_name}}</td>
+                                            <td>{{q.vehicle_no}}</td>
+                                            <td>{{q.remarks}}</td>
+                                    </tr>
+                                    {% endfor %}    
+                                      
+                                </tbody>
+                            </table>
+                        </div>
+                        {% endif %}
+                        
+                    </div>
+        </div>
+        <script src="{{url_for('static', filename='js/jquery-3.4.js')}}"></script>
+    </body>
+
+
+<script type="text/javascript">
+    var addSerialNumber = function(){
+        $('table tr').each(function(index){
+            $(this).find('td:nth-child(1)').html(index+0);
+        });
+    };
+    
+    
+</script>
+
+
+</html>

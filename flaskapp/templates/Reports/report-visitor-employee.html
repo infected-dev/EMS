@@ -1,0 +1,140 @@
+{% extends 'test-dashboard.html' %}
+
+{% block pagetitle %}
+    By Employee: Visitors
+{% endblock %}
+
+{% block title %}Filtered by Employee:  {% endblock %}
+
+{% block linktitle %} Visitors {% endblock %}
+
+{% block body %}
+
+<div class="row">
+    <div class="col">
+        <div class="card">
+            <h4 class="card-header text-left">Main Section</h4>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-3">
+                            <div class="card">
+                                <h5 class="card-header text-center">Select Employee</h5>
+                                <div class="card-body">
+                                    <form action="{{url_for('report.employee_visitors')}}" method="POST">
+                                        <select class="mb-2 form-control" name="emp_id" id="emp_select">
+                                            {% for e in employees %}
+                                            <option value="{{e.id}}">
+                                                {{e.employee_name}}
+                                            </option>
+                                            {% endfor %}
+                                        </select>
+                                        <input id="deptbtn" type="submit" class=" btn btn-primary btn-block">
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="mt-2 card">
+                                <h5 class="card-header">Total Count:</h5>
+                                <div class="card-body text-center">
+                                    {% if count != 0 %}
+                                    <p class=" display-4">{{count}}</p>
+                                    {% else %}
+                                    <p class=" font-weight-bold">Please select an Employee</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                       
+
+                        <div class="col">
+                            <div class="card">
+                                <h5 class="card-header text-center">Data grouped by Vendor Company Name </h5>
+                                <div class="card-body">
+                                    <h6 class="card-title font-italic font-weight-bold mb-4">Employee :{{emp_name}} / {{dept_name.title()}}</h6>
+                                    <table id="emptable" class="table-responsive table table-bordered table-sm table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Visitor Name</th>
+                                                <th>Place From</th>
+                                                <th>Visiting Purpose</th>
+                                                <th>In Time</th>
+                                                <th>Out Time</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                                
+                                                {% for i in timelog %}
+                                            
+                                                    <tr>
+                                                        <td>{{i.date.strftime('%d-%m-%Y')}}</td>      
+                                                        <td>{{i.a_timelog.name.title()}}</td>
+                                                        <td>{{i.a_timelog.place_from.title()}}</td>
+                                                        <td>{{i.active.visiting_purpose.title()}}</td>
+                                                        <td>{{i.in_time}}</td>
+                                                        <td>{{i.out_time}}</td>    
+                                                    </tr>
+                                              
+                                                {% endfor %}
+                                            
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>  
+                        </div>
+                    </div>
+                </div>
+        </div>
+        
+    </div>
+
+
+</div>
+
+{% endblock %}
+
+{% block script %}
+    <script>
+            $(document).ready(function() {
+                var groupColumn = 0;
+                var table = $('#emptable').DataTable({
+                    "columnDefs": [
+                        { "visible": false, "targets": groupColumn }
+                    ],
+                    "order": [[ groupColumn, 'asc' ]],
+                    "displayLength": 25,
+                    "drawCallback": function ( settings ) {
+                        var api = this.api();
+                        var rows = api.rows( {page:'current'} ).nodes();
+                        var last=null;
+             
+                        api.column(groupColumn, {page:'current'} ).data().each( function ( group, i ) {
+                            if ( last !== group ) {
+                                $(rows).eq( i ).before(
+                                    '<tr class="group font-weight-bold  bg-dark text-white"><td colspan="6">'+group+'</td></tr>'
+                                );
+             
+                                last = group;
+                            }
+                        } );
+                    }
+                } );
+             
+                // Order by the grouping
+                $('#emptable tbody').on( 'click', 'tr.group', function () {
+                    var currentOrder = table.order()[0];
+                    if ( currentOrder[0] === groupColumn && currentOrder[1] === 'asc' ) {
+                        table.order( [ groupColumn, 'desc' ] ).draw();
+                    }
+                    else {
+                        table.order( [ groupColumn, 'asc' ] ).draw();
+                    }
+                } );
+            } );
+    </script>
+    <script>
+    
+       
+    </script>
+{% endblock %}

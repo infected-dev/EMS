@@ -1,0 +1,182 @@
+{% extends 'test-dashboard.html' %}
+
+
+<!--Page Title Block-->
+{% block pagetitle %}
+Agency Logging
+{% endblock %}
+<!-- End of Page Title BLock-->
+
+
+<!--Title Block-->
+{% block title %}
+Agency Logging
+{% endblock %}
+<!--End of Title Block-->
+
+{% block body %}
+
+<div class="container-fulid">
+    <div class="row ml-2">
+        <div class="col ml-2">
+            <div class="card">
+                <h5 class="card-header">Agency Data Entry</h5>
+                <div class="card-body">
+                    <form action="{{url_for('agencyapp.add_log')}}" , method="POST">
+                        <div class="form-row mb-2">
+                            <div class="col-2">
+                                <label for="date" class="form-label">Date</label>
+                                <input value="{{date}}" type="date" name="date" class="form-control" required>
+                            </div>
+                            <div class="col-2">
+                                <label for="intime" class="form-label">In Time:</label>
+                                <input value="{{time}}" type="time" name="intime" class="form-control" required default>
+                            </div>
+
+                        </div>
+
+                        <div class="form-row">
+                            <div class="col">
+                                <label for="orderno" class="form-label">Order No:</label>
+                                <input type="text" name="orderno" class="form-control" required>
+                            </div>
+
+                            <div class="col">
+                                <label for="agencyname" class="form-label">Agency Name:</label>
+                                <input list="agen" name="agencyname" class="form-control" autocomplete="off" required>
+                                <datalist id="agen">
+                                    {% for a in agencies %}
+                                    <option value="{{a.agency_name}}">{{a.agency_name}}</option>
+                                    {% endfor %}
+                                </datalist>
+                            </div>
+
+                            <div class="col">
+                                <label for="worktype" class="form-label">WorkType:</label>
+                                <input list="worktypes" name="worktype" class="form-control" autocomplete="off" required>
+                                <datalist id="worktypes">
+                                    {% for wt in worktypes %}
+                                    <option value="{{wt.work_type}}">{{wt.work_type}}</option>
+                                    {% endfor %}
+                                </datalist>
+                            </div>
+
+                            <div class="col">
+                                <label for="rprname" class="form-label">Name:</label>
+                                <input type="text" name="rprname" class="form-control" required>
+                            </div>
+
+                            <div class="col">
+                                <label for="totalpeople" class="form-label">Extra:</label>
+                                <input type="number" name="totalpeople" class="form-control">
+
+                            </div>
+                            <div class="col">
+                                <label for="ifvehicle" class="form-label">Vehicle:</label>
+                                <input type="text" name="ifvehicle" class="form-control">
+
+                            </div>
+
+                            <div class="col">
+                                <label for="supervisor" class="form-label">Supervisor</label>
+                                <input list="supervisors" name="supervisor" class="form-control" autocomplete="off" required>
+                                <datalist id="supervisors">
+                                    {% for sup in supervisors %}
+                                    <option value="{{sup.supervisor_name}}"></option>
+                                    {% endfor %}
+                                </datalist>
+                            </div>
+
+                            <div class="col">
+                                <label for="location" class="form-label">Location: </label>
+
+                                <input list="locations" name="location" class="form-control" autocomplete="off" required>
+                                <datalist id="locations">
+                                    {% for loc in locations %}
+                                    <option value="{{loc.location_name}}"></option>
+                                    {% endfor %}
+                                </datalist>
+                            </div>
+
+                            <div class="col-2">
+                                <label for="remark" class="form-label">Remarks/ Tools:</label>
+                                <input type="text" name="remark" class="form-control">
+                            </div>
+                            <div class="form-row">
+
+                            </div>
+
+
+
+
+                        </div>
+
+
+
+
+
+                </div>
+
+
+
+
+
+            </div>
+            <div class="form-group">
+                <input type="submit" class="btn btn-block btn-primary">
+            </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<div class="row">
+    <div class="col ml-2 mt-3">
+        <div class="card">
+            <h5 class="card-header">Agency Timesheet</h5>
+            <div class="card-body">
+                <table id="agencytable" class="table table-sm">
+                    <thead class="thead">
+                        <tr>
+                            <th>#</th>
+                            <th>Order No</th>
+                            <th>Agency Name</th>
+                            <th>WorkType</th>
+                            <th>Name</th>
+                            <th>Supervisor</th>
+                            <th>Location</th>
+
+                            <th>In Time</th>
+                            <th>Out Time</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for l in log %}
+                        <tr id="data{{l.al_id}}">
+                            <td></td>
+                            <td>{{l.order}}</td>
+                            <td>{{l.agenm.agency_name}} </td>
+                            <td>{{l.wtyp.work_type}}</td>
+                            <td>{{l.contact_person}}+ {{l.manpower}}</td>
+                            <td>{{l.superm.supervisor_name}}</td>
+                            <td>{{l.locationm.location_name}}</td>
+                            <td>{{l.in_time}}</td>
+                            <td><input id="outtimea{{l.al_id}}" class="form-control form-control-sm" type="time"
+                                    value="{{l.out_time}}"></td>
+                            <td><button id="btn{{l.al_id}}" class="updateagency btn btn-sm btn-warning"
+                                    attributes="{{l.al_id}}">Update</button></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</div>
+
+{% endblock %}

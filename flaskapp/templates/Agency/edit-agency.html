@@ -1,0 +1,310 @@
+{% extends 'test-dashboard.html' %}
+
+{% block pagetitle %}
+Edit Agency Data
+{% endblock %}
+
+{% block title %} Edit Agency Data {% endblock %}
+
+{% block styles %}
+<style>
+    label{
+        font-weight: bold;
+    }
+</style>
+
+
+{% endblock %}
+
+{% block body %}
+<div class=" row ">
+    <div class="col-3 mt-3">
+        <div class="card ml-3">
+            <h4 class="card-header text-center">
+                Back Date Data Entry
+            </h4>
+            <div class="card-body">
+                <div class=" ml-2">
+
+                    <form method="POST" action="{{url_for('agencyapp.edit_agency')}}">
+                        <div class="form-group">
+                            <label for="selected_date">Choose Date:</label>
+                            <input id="selected_date" class="form-control" type="date" name="selected_date" value="{{date}}" autofocus>
+                            <input id="selected_date_btn" class="btn btn-success btn-block mt-2" type="submit" value="Get">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="col mt-3">
+        <div class="card">
+            <h4 class="card-header">Update agency Data</h4>
+            <div class="card-body">
+                <div class=" table-responsive ">
+                    <table id="editAgency" class="table table-stripped table-sm">
+                        <thead class="thead">
+                            <tr>
+                                <th>#</th>
+                                <th>Date</th>
+                                <th>Order No</th>
+                                <th>Agency</th>
+                                <th>WorkType</th>
+                                <th>Name</th>
+                                <th>Workers</th>
+                                <th>In Time</th>
+                                <th>Out Time</th>
+                                <th>Vehicle</th>
+                                <th>Remarks</th>
+                                <th>Supervisor</th>
+                                <th>Location</th>
+                                <th>Edit</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for l in log %}
+                            <tr id="datasection{{l.al_id}}">
+                                <th></th>
+                                <th id="date{{l.al_id}}">{{l.date}}</th>
+                                <td id="order{{l.al_id}}">{{l.order}}</td>
+                                <td id="agency{{l.al_id}}" data-id="{{l.agency_id}}">{{l.agenm.agency_name}}</td>
+                                <td id="worktype{{l.al_id}}" data-id="{{l.worktype_id}}">{{l.wtyp.work_type}}</td>
+                                <td id="name{{l.al_id}}">{{l.contact_person}}</td>
+                                <td id="workers{{l.al_id}}">{{l.manpower}}</td>
+                                <td id="in_time{{l.al_id}}">{{l.in_time}}</td>
+                                <td id="out_time{{l.al_id}}">{{l.out_time}}</td>
+                                <td id="vehicleno{{l.al_id}}">{{l.vehicle_no}}</td>
+                                <td id="remarks{{l.al_id}}">{{l.remarks}}</td>
+                                <td id="supervisor{{l.al_id}}" data-id="{{l.Supervisor_id}}">{{l.superm.supervisor_name}}</td>
+                                <td id="location{{l.al_id}}" data-id="{{l.location_id}}">{{l.locationm.location_name}}</td>
+                                <td><button data-id="{{l.al_id}}" data-toggle="modal" data-target="#editagency"
+                                        class="btn btn-sm btn-warning">Edit</button></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                </div>
+
+                <div class="editagency modal fade bd-example-modal-lg" id="editagency" tabindex="-1" role="dialog"
+                    aria-labelledby="deptwisemodallabel" aria-hidden="true">
+                    <div class="modal-dialog" role="form">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Chnage Data</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                        aria-hidden="true">&times;</span></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row p-2">
+                                   
+                                        <div class="form-row p-1">
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <input id="log_id" type="hidden">
+                                                    <label for="order" class="">Order No</label>
+                                                    <input id="order" class="form-control form-control-sm" type="text">
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <label for="work_type" class="">Work Type</label>
+                                                    <select id="work_type" class="form-control form-control-sm" type="text">
+                                                       
+                                                            {% for w in worktypes | sort(attribute='work_type')  %}
+                                                            <option value="{{w.wt_id}}">{{w.work_type }}</option>
+                                                            {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+    
+                                        </div>
+                                        
+                                        <div class="form-row w-100 p-1">
+                                            <div class="col">
+                                                <label for="agency" class=" ">Agency</label>
+                                                <select id="agency" class="form-control form-control-sm" type="text" readonly>
+                                                        {% for a in agencys %}
+                                                        <option value="{{a.a_id}}">{{a.agency_name}}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                            </div>
+                                            
+                                        </div>
+                                               
+                                            
+                                        <div class="form-row p-1">
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <label for="name" class=" ">Name</label>
+                                                    <input id="name" class="form-control form-control-sm" type="text">
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <label for="workers" class=" ">Workers</label>
+                                                    <input id="workers" class="form-control form-control-sm" type="number">
+                                                </div>
+                                            </div>
+                                            
+    
+                                        </div>
+    
+                                        <div class="form-row p-1">
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <label for="in_time" class=" ">In Time</label>
+                                                    <input id="in_time" class="form-control form-control-sm" type="time">
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <label for="out_time" class=" ">Out Time</label>
+                                                    <input id="out_time" class="form-control form-control-sm" type="time">
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <label for="date" class=" ">Date</label>
+                                                    <input id="date" class="form-control form-control-sm" type="date">
+                                                </div>
+                                            </div>
+    
+                                        </div>
+    
+                                        <div class="form-row p-1">
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <label for="supervisor" class=" ">Supervisor</label>
+                                                    <select id="supervisor" class="form-control form-control-sm" type="text" >
+                                                        {% for s in supervisors | sort(attribute='supervisor_name') %}
+                                                            <option value="{{s.sid}}">{{s.supervisor_name}}</option>   
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <label for="location" class=" ">Location</label>
+                                                    <select id="location" class="form-control form-control-sm" type="text">
+                                                        {% for l in locations | sort(attribute='location_name') %}
+                                                            <option value="{{l.lid}}">{{l.location_name}}</option>
+                                                        {% endfor %}
+                                                        </select>
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <label for="remark" class=" ">Remarks</label>
+                                                    <input id="remark" class="form-control form-control-sm" type="text">
+                                                </div>
+                                            </div>
+    
+                                        </div>
+    
+                                        <input id="editagencybtn" type="submit" class="btn btn-primary btn-block">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+    {% endblock %}
+
+    {% block script %}
+      
+    <script>
+        $('.editagency').on('show.bs.modal', function (e) {
+            var id = $(e.relatedTarget).data('id');
+            
+            var order = $('#order' + id).html();
+            var date = $('#date'+id).html()
+            var agency = $('#agency'+id).html();
+            var work_type = $('#worktype'+id).data('id');
+            var name = $('#name'+id).html();
+            var workers = $('#workers'+id).html();
+            var in_time = $('#in_time'+id).html();
+            in_time = in_time.slice(0,-3)
+            var out_time = $('#out_time'+id).html();
+            out_time = out_time.slice(0,-3)
+            var vehicle = $('#vehicleno'+id).html();
+            var remarks = $('#remarks'+id).html();
+            var supervisor = $('#supervisor'+id).data('id');
+            var location = $('#location'+id).data('id');
+            var agency = $('#agency'+id).data('id')
+
+            $('#order').val(order);
+            $('#log_id').val(id);
+            $('#agency').val(agency);
+            $('#work_type').val(work_type)
+            $('#name').val(name);
+            $('#workers').val(workers);
+            $('#date').val(date);
+            $('#in_time').val(in_time);
+            $('#out_time').val(out_time);
+            $('#vehicleno').val(vehicle);
+            $('#remarks').val(remarks);
+            $('#supervisor').val(supervisor);
+            $('#location').val(location);
+
+        });
+
+        $('#editagencybtn').on('click', function(){
+            var logid = $('#log_id').val();
+            var order = $('#order').val();
+            var name = $('#name').val();
+            var work_type = $('#work_type').children("option:selected").val();
+            var workers = $('#workers').val();
+            var in_time = $('#in_time').val();
+            var out_time = $('#out_time').val();
+            var supervisor = $('#supervisor').children("option:selected").val();
+            var location = $('#location').children("option:selected").val();
+            var agency = $('#agency').children("option:selected").val();
+            req = $.ajax({
+                url:'/changedata',
+                type: 'POST',
+                data:{
+                    logid:logid,
+                    order:order, 
+                    name:name,
+                    work_type:work_type, 
+                    workers:workers, 
+                    in_time:in_time, 
+                    out_time:out_time, 
+                    location:location,
+                    supervisor:supervisor,
+                    agency_id : agency
+                }
+            });
+            
+            $('#editagency').modal('hide');
+            
+        });
+
+       
+
+
+    </script>
+
+    <script type="text/javascript">
+        var addSerialNumber = function () {
+            $('#editAgency  tr').each(function (index) {
+                $(this).find('td:nth-child(1)').html(index + 0);
+            });
+        };
+
+        addSerialNumber();
+    </script>
+
+    {% endblock %}

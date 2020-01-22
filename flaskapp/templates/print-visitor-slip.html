@@ -1,0 +1,128 @@
+<htmL>
+
+<head>
+    <style>
+        @media print{
+            body {
+                margin: 0 auto;
+            }
+        }
+        
+        
+
+
+    </style>
+     <link href="{{url_for('static', filename='css/bootstrap.min.css')}}" rel="stylesheet">
+</head>
+
+<body style="font-size: 1.2rem;" class="font-weight-bold">
+    <div style="border: 2px solid black;" class="m-4 p-2">
+            <div class="main-border w-auto">
+                    <div class="mt-3" id="company-name">
+                        <h1 style="font-family: Arial, Helvetica, sans-serif;" class=" text-center font-weight-bold mt-1">Siddhi Vinayak Knots & Prints Pvt. Ltd</h1>
+                        <p  class="text-center h5 mb-3">A-26 To A-32, "Central Park", G.I.D.C, Pandesara, Surat-394221</p>
+                    </div>
+                    <div class="slip-title">
+                        <h4  class="mt-0 text-center font-weight-bold"><span class="border-bottom border-dark">VISITOR'S SLIP</span></h4>
+                    </div>
+                    
+
+                    <div style="font-size: 1.2em;" class="slip ml-n3 mr-5">
+
+
+                        <div class="row p-1 m-1 mb-3">
+                                    <div class="col-3 mr-n5">
+                                            <p class="mb-0"> Visitor Slip No:  </p>
+                                    </div>
+                                    <div class="col border-bottom ">
+                                                {{serial}}
+                                    </div>
+                                    <div class="col-3 mr-n3 text-right">
+                                            <p class="mb-0 "> Date: </p>
+                                    </div>
+                                           
+                                    <div class="col-3 border-bottom  text-right">
+                                            <span class=" font-weight-bold">{{visitor.date.strftime('%d/%m/%Y')}}</span>
+                                    </div>
+                                    
+                                </div>
+                        <div class="row p-1 m-1">
+                            <div class="col-3 mr-n5 ">
+                                    <p class="">Visitor's Name:</p>
+                            </div>
+                            <div class="col p-0 mb-3  border-bottom">
+                                    {% if visitor.extras %}
+                                    <span class=" ml-3 font-weight-normal">{{visitor.a_timelog.name.title()}} +{{visitor.extras}} - {{visitor.a_timelog.contact}}</span>
+                                    {% else %}
+                                    <span class=" ml-3 font-weight-normal">{{visitor.a_timelog.name.title()}} - {{visitor.a_timelog.contact}}</span>
+                                    {% endif %}
+                            </div>
+                        </div>
+
+                        
+                        <div class="row p-1 m-1">
+                                <div class="col-3 mr-n5 ">
+                                        <p class="">Meeting with:</p>
+                                </div>
+                                <div class="col mb-3 p-0 text-left   border-bottom">
+                                        <span class=" font-weight-normal">{{visitor.active.visited_employee.employee_name.title()}}</span>
+                                </div>
+                            </div>
+                        
+
+                        <div class="row p-1 m-1">
+                                    <div class="col-3 mr-n5 ">
+                                            <p class="">Department:</p>
+                                    </div>
+                                    <div class="col mb-3 p-0 text-left   border-bottom">
+                                                <span class=" font-weight-normal">{{visitor.active.visited_dept.department_name.title()}}</span>
+                                    </div>
+                                </div>
+                
+
+                        <div class="row p-1 m-1">
+                                        <div class="col-3 mr-n5 ">
+                                                <p class="">Purpose of Visit:</p>
+                                        </div>
+                                        <div class=" ml-4 col mb-3 p-0 text-left   border-bottom">
+                                                <span class=" ml-2  font-weight-normal">{{visitor.active.visiting_purpose.title()}}</span>
+                                        </div>
+                                        <div class="col-2">
+                                                <p>Place From:</p>
+                                        </div>
+                                        <div class="col border-bottom">
+                                                <span class=" ml-2 font-weight-normal">{{visitor.a_timelog.place_from.title()}}</span>
+                                        </div>
+                                    </div>        
+                        
+
+                        <div class="row p-1 m-1">
+                                            <div class=" mr-n5 col-2 ">
+                                                    <p class="">In Time :  </p>
+                                            </div>
+                                            <div class="col mb-3 p-0 text-center  border-bottom ">
+                                                    <span class=" ml-2  font-weight-normal">{{visitor.in_time}}</span>
+                                            </div>
+                                            <div class="col-2 mr-n5 text-left">
+                                                    <p class="">Out Time :</p>
+                                            </div>
+                                            <div class="col mb-3 p-0 text-center  border-bottom">
+                                                    <span class=" ml-2  font-weight-normal"></span>
+                                            </div>
+                                        </div>  
+
+                        <div class="row p-1 m-1 mt-3">
+                            <div class="col-4 mr-n5 text-left">
+                                    <p style="margin-top: px;" class="">Authorized Signature:</p>
+                            </div>
+                            <div  class=" col  border-bottom mb-3">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    </div>
+    
+</body>
+
+</htmL>

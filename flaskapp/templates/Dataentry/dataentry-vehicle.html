@@ -1,0 +1,192 @@
+{% extends 'test-dashboard.html' %}
+
+<!-- CSS Style Block -->
+{%block styles%}
+<style>
+    table tbody {
+        font-size: 1rem;
+    }
+
+    .form-group{
+        margin-right: 5px;
+        box-shadow: brown;
+        
+    }
+    #visitorform {
+        margin-left: 5px;
+    }
+    label{
+        font-weight: 500;
+    }
+</style>
+{%endblock%}
+<!-- End of CSS Block-->
+
+
+<!--Page Title Block-->
+{% block pagetitle %}
+Outside Vehicle Data Entry
+{% endblock %}
+<!-- End of Page Title BLock-->
+
+
+<!--Title Block-->
+{% block title %}
+Outside Vehicle Data Entry
+{% endblock %}
+<!--End of Title Block-->
+
+{% block linktitle %}
+ 
+{% endblock %}
+
+{% block body %}
+<div  class="container-fulid">
+<!-- Start of Vehicle Data Entry Form   -->
+
+  <div class="row">
+        
+                <div class="col-4"> 
+                    <div style="position: fixed;" class="card ml-4">
+                            <h5 class="card-header">
+                                    Outside Vehicle Data Entry 
+                                </h5>
+                                <div class="card-body">
+                                    <form action="/vehicles" method="POST" class="mb-4 ">
+                                        <div class="form-row form-group">
+                                            <label class="col-form-label">Date:</label>
+                                            <div class="col">
+                                                <input type="date" class="form-control" id="date" name="entry_date" value="{{today_date}}">
+                                            </div>
+                                        </div>
+        
+                                        <div class="form-group form-row">
+                                                <label class="col-form-label">In Time:</label>
+                                                <div class="col">
+                                                        <input name="intime" class="form-control" type="time" value="{{today_time}}">
+                                                </div>
+                                        </div>
+                                        
+                                            <div class="form-row form-group">
+                                
+                                                    <label class="col-form-label">Vehicle No:</label>
+                                                    <div class="col">
+                                                            <input style="text-transform:uppercase;" placeholder="(XX-99-XX-9999)" type="text" class="form-control"
+                                                            id="name" name="veno" required>
+            
+                                                    </div>
+                                            </div>
+        
+                                            <div class="form-group form-row">
+                                                    <label class="col-form-label">Vendor Name</label>
+                                                    <div class="col">
+                                                            <input style="text-transform:uppercase;" name="vendorname" class="form-control" type="text"
+                                                            placeholder="Vendor Name" required>
+                                                    </div>  
+                                            </div>  
+
+                                            <div class="form-group form-row">
+                                                    <label class="col-form-label">Department to:</label>
+                                                <div class="col">
+                                                        <select class="form-control" name="dept">
+                                                                {% for d in departments %}
+                                                                <option value={{d.id}}>
+                                                                    {{d.department_name}}
+                                                                </option>
+                                                                {% endfor %}
+                                                            </select>
+                                                </div>      
+                                            </div>
+                                
+                                        
+                                        <div class="form-group">
+                                            <label class="sr-only">Submit</label>
+                                            <input class="btn btn-block btn-primary" type="submit">
+                                        </div>
+                                
+                                    </form>
+                                </div>
+                    </div>
+
+            </div>
+      
+            <div class="col">
+                <div class="card table-responsive">
+                                    <h5 class="card-header">Update Outside Vehicles</h5>
+                                    
+                                <div class="card-body">
+                                    <table id="outsidevehicleentry" class="table table-borderless table-sm table-hover">
+                                        <thead>
+                                            <th>#</th>
+                                            <th>Vehicle No</th>
+                                            <th>Department</th>
+                                            <th>In Time</th>
+                                            <th>Out Time</th>
+                                            <th>Actions</th>
+                                        </thead>
+                                        <tbody>
+                                                {% for v in today_vehicles %}
+                                                <tr id="datasectionveh{{v.VeID}}">
+                                                    <td></td>
+                                                    <td><strong>{{v.VeNO}}</strong></td>
+                                                    <td>{{v.outside_dept.department_name}}</td>
+                                                    <td>{{v.InTime}}</td>
+                                                    
+                
+                                                        <input type="hidden"
+                                                            value="{{v.VeID}}"
+                                                            name="vid"
+                                                            id="vid{{v.VeID}}">
+                                                        <td>
+                                                            <input id="outtime{{v.VeID}}"
+                                                                class="vupdateoutout form-control form-control-sm"
+                                                                type="time"
+                                                                value="{{v.OutTime}}"
+                                                                name="outtime"
+                                                                attribute="{{v.VeID}}">
+                                                        </td>
+                                                        <td><button id="button{{v.VeID}}"  attributes="{{v.VeID}}" type="submit"
+                                                                class="updatevehicles btn btn-sm btn-warning"
+                                                                value="Update">Update</button>
+                                                        </td>
+                                                        <td><form action="{{url_for('dataentry.delete_vehicles')}}" method="POST">
+                                                            <input type="hidden" value="{{v.VeID}}" name="vid">
+                                                                <input type="submit"
+                                                                class="btn btn-sm btn-danger"
+                                                                value="Delete">
+                                                        </form></td>
+                                                        
+                                                   
+                
+                                                </tr>
+                                                {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                    </div>
+                    
+            </div>
+    </div>
+</div>
+
+
+
+{% endblock %}
+
+
+
+{% block script %}
+
+
+<script type="text/javascript">
+    var addSerialNumber = function(){
+        $('#outsidevehicleentry tr').each(function(index){
+            $(this).find('td:nth-child(1)').html(index+0);
+        });
+    };
+    
+    addSerialNumber();
+</script>
+
+{% endblock %}
+

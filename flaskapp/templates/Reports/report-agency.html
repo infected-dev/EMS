@@ -1,0 +1,318 @@
+{% extends 'test-dashboard.html' %}
+
+{% block pagetitle %}
+Agency Report
+{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="{{url_for('static', filename='css/print-format.css')}}">
+{% endblock %}
+
+{% block title %} Agency {% endblock %}
+
+{% block linktitle %} Reports {% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col">
+        <div class="card">
+            <h5 class="card-header text-center">Print</h5>
+            <div class="btn-group" role="group">
+                <button type="button" data-toggle="modal" data-target="#datewisemodal"
+                    class="btn btn-secondary m-3 rounded"> Date Wise Report</button>
+                <button type="button" data-toggle="modal" data-target="#departmentwisemodal"
+                    class="btn btn-secondary rounded m-3 "> Location Wise Report</button>
+                <button type="button" data-toggle="modal" data-target="#personwisemodal"
+                    class="btn btn-secondary m-3 rounded"> Agency Wise Report</button>
+
+                    <button type="button" data-toggle="modal" data-target="#supervisormodal"
+                    class="btn btn-secondary m-3 rounded"> Supervisor Wise Report</button>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="datewisemodal" tabindex="-1" role="dialog" aria-labelledby="datewisemodallabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="form">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"> Date Wise Report </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <form class="form-row" action="{{url_for('agencyapp.print_agency_report')}}" method="POST">
+                        <input type="hidden" name="printid" value="1">
+                        <label class=" mb-2 h6 col-form-label" for="#date">Select Date : </label>
+                        <input id="date" type="date" class="form-control" name="date" autofocus>
+
+                        <input type="submit" class="mt-2 btn btn-primary btn-block btn-sm" value="Print">
+
+                    </form>
+                    <form class="mt-2" action="{{url_for('agencyapp.print_agency_report')}}" method="POST">
+
+                        <p><strong>Consolidated Report</strong></p>
+                        <div class="form-row">
+                            <input type="hidden" name="printid" value="5">
+                        <label class=" mb-2 h6 col-form-label" for="#date1">Select Date : </label>
+                        <input id="date1" type="date" class="form-control col mr-2 " name="date" > 
+                        <input id="date2" type="date" class="form-control col" name="date2" >
+                        <input type="submit"  class="mt-2 btn btn-primary btn-block btn-sm" value="Print">
+                        </div>
+                        
+                      
+                </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="departmentwisemodal" tabindex="-1" role="dialog" aria-labelledby="departmentwise"
+        aria-hidden="true">
+        <div class="modal-dialog" role="form">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"> Location Wise Report </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                </div>
+
+                <div class="modal-body">
+                    <form class="form-row" action="{{url_for('agencyapp.print_agency_report')}}" method="POST">
+                        <div class="form-group">
+                            <label class="col-form-label" for="loc">Select Location:</label>
+                            <select class="form-control" name="loc" id="loc" autofocus>
+                                {% for l in locations %}
+                                <option value="{{l.lid}}">{{l.location_name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class=" ml-3 form-group">
+                            <input type="hidden" name="printid" value="2">
+                            <label class="  h6 col-form-label" for="#date">Select Date : </label>
+                            <input id="date" type="date" class="form-control" name="date">
+                            <div class="mt-2 form-check">
+                                <input id="alldeptcheck" class="form-check-input" type="checkbox" name="deptcheck"
+                                    value="1">
+                                <label class="form-check-label" for="alldeptcheck"> Sorted by all department?</label>
+                            </div>
+                        </div>
+
+
+
+
+
+                        <input type="submit" class="mt-2 btn btn-primary btn-block btn-sm" value="Print">
+
+                    </form>
+                    <form class="mt-2" action="{{url_for('agencyapp.print_agency_report')}}" method="POST">
+
+                        <p><strong>Consolidated Report</strong></p>
+                        <div class="form-row">
+                            <input type="hidden" name="printid" value="7">
+                            <div class="form-group">
+                                <label class="col-form-label" for="loc">Select Location:</label>
+                                <select class="form-control" name="loc" id="loc" autofocus>
+                                    {% for l in locations %}
+                                    <option value="{{l.lid}}">{{l.location_name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                
+            
+                        <div class="form-row">
+                            <label class=" mb-2 h6 col-form-label" for="#date1">Select Date : </label>
+                        <input id="date1" type="date" class="form-control col mr-2 " name="date" > 
+                        <input id="date2" type="date" class="form-control col" name="date2" >
+                        <input type="submit"  class="mt-2 btn btn-primary btn-block btn-sm" value="Print">
+                        </div>
+                        
+                        </div>
+                        
+                      
+                     </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="personwisemodal" tabindex="-1" role="dialog" aria-labelledby="personwisemodal"
+        aria-hidden="true">
+        <div class="modal-dialog" role="form">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Agency Wise Report </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <form class="form-row" action="{{url_for('agencyapp.print_agency_report')}}" method="POST">
+                        <div class="form-group">
+                            <label class="mb-2 h6 col-form-label" for="#agency_name">Select Agency</label>
+                            <select class="form-control" name="agency_name">
+                                {% for a in agency_mast %}
+                                <option value="{{a.a_id}}">{{a.agency_name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-gorup">
+                            <input type="hidden" name="printid" value="3">
+                            <label class="mb-2  h6 col-form-label" for="date">Select Date:</label>
+                            <input class="form-control" type="date" name="date">
+                        </div>
+                        <input type="submit" class="mt-2 btn btn-primary btn-block btn-sm" value="Print">
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="supervisormodal" tabindex="-1" role="dialog" aria-labelledby="personwisemodal"
+        aria-hidden="true">
+        <div class="modal-dialog" role="form">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Supervisor Wise Report </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <form class="form-row" action="{{url_for('agencyapp.print_agency_report')}}" method="POST">
+                        <div class="form-group">
+                            <label class="mb-2 h6 col-form-label" for="#supervisor_name">Select Supervisor</label>
+                            <select class="form-control" name="supervisor_name">
+                                {% for s in supervisors %}
+                                <option value="{{s.sid}}">{{s.supervisor_name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-gorup">
+                            <input type="hidden" name="printid" value="8">
+                            <label class="mb-2  h6 col-form-label" for="date">Select Date:</label>
+                            <input class="form-control" type="date" name="date">
+                        </div>
+                        <input type="submit" class="mt-2 btn btn-primary btn-block btn-sm" value="Print">
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col mt-2">
+        <div id="allvisitor" class="card">
+            <div class="card-header text-center">
+                <h6 class="text-black">ALL Agency Data</h6>
+            </div>
+
+            <div class="card-body w-100">
+                <table id='all-visitoreport' class="table table-condensed  table-borderless w-100">
+                    <thead class=" thead-dark">
+                        <tr class="">
+                            <th>Entry date</th>
+                            <th>Order No</th>
+                            <th>Agency Name</th>
+                            <th>Contact Person</th>
+                            <th>Work Type</th>
+                            <th>Workers</th>
+                            <th>In Time</th>
+                            <th>Out Time</th>
+                            <th>Duration</th>
+                            <th>Vehicle</th>
+                            <th>Remarks</th>
+                            <th>Supervisor</th>
+                            <th>Location</th>
+                            <th>Actions</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for l in log %}
+                        <tr class="text-wrap">
+
+                            <td>{{l.date.strftime('%d-%m-%Y')}}</td>
+
+                            <td>{{l.order}}</td>
+
+
+                            <td>{{l.agenm.agency_name.title()}}</td>
+
+
+                            <td>{{l.contact_person.title()}}</td>
+
+                            <td>{{l.wtyp.work_type.title()}}</td>
+
+                            {% if l.manpower == None %}
+                            <td>None</td>
+                            {% else %}
+                            <td>{{l.manpower}}</td>
+                            {% endif %}
+
+
+                            <td>{{l.in_time}}</td>
+                            <td>{{l.out_time}}</td>
+                            <td>{{l.duration}}</td>
+                            <td>{{l.vehicle_no}}</td>
+                            <td>{{l.remarks}}</td>
+
+                            <td>{{l.superm.supervisor_name.title()}}</td>
+                            <td>{{l.locationm.location_name}}</td>
+                            <td><button id="visitor-delete" type="button" value="Actions" class="btn btn-sm btn-warning"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Actions</button>
+                                <div class="dropdown-menu" aria-labelledby="visitor-delete">
+                                    <div>
+                                        <form action="{{url_for('agencyapp.report_agency')}}" method="POST">
+                                            <input type="hidden" name="al_id" value="{{l.al_id}}">
+                                            <input class="dropdown-item" type="submit" value="Delete">
+
+                                        </form>
+
+                                    </div>
+
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+
+{% endblock %}
+
+{% block script %}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var t = $('#all-visitoreport').DataTable({
+            "order": [[0, 'desc']]
+
+        });
+
+
+    });
+</script>
+
+
+<script>
+    $('.modal').on('shown.bs.modal', function () {
+        $(this).find('[autofocus]').focus();
+    });
+</script>
+{% endblock %}
