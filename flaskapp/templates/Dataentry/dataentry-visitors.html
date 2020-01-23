@@ -51,7 +51,11 @@ Visitor Data Entry
                 <h4 class=" card-header text-center">Data Entry</h4>
                 <div class="card-body p-2" >
 
+                    {% if current_user.user_plant == 3 %}
                     <form id="visitorform" action="/test-postformat/visitor" method="POST" class="form ">
+                        {% else %}
+                        <form id="visitorform" action="/sachin/newvisitor" method="POST" class="form ">
+                            {% endif %}
                         <!--Entry Date Input-->
                         <div class="form-row form-group mb-2 ">
                                 <label class="col-form-label" for="entrydate">Date:</label>
