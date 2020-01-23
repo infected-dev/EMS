@@ -46,7 +46,7 @@ def add_log():
 
 
         if AgencyMast.check_agency(name=agency_name) is None:
-            a = AgencyMast(agency_name=agency_name)
+            a = AgencyMast(agency_name=agency_name, plant_id=3)
             db.session.add(a)
             db.session.commit()
             a = a.a_id
@@ -57,7 +57,7 @@ def add_log():
 
 
         if WorkType.check_work(wtype=worktyp) is None:
-            wt = WorkType(work_type=worktyp)
+            wt = WorkType(work_type=worktyp, plant_id=3)
             db.session.add(wt)
             db.session.commit()
 
@@ -69,7 +69,7 @@ def add_log():
 
 
         if Supervisor.check_supervisor(name=supervisor) is None:
-            supe = Supervisor(supervisor_name=supervisor)
+            supe = Supervisor(supervisor_name=supervisor, plant_id=3)
             db.session.add(supe)
             db.session.commit()
 
@@ -80,7 +80,7 @@ def add_log():
             
 
         if Location.check_location(name=location) is None:
-            loc = Location(location_name=location)
+            loc = Location(location_name=location, plant_id=3)
             db.session.add(loc)
             db.session.commit()
 
@@ -304,7 +304,7 @@ def chnage_data():
         location = request.form['location']
         supervisor_id = request.form['supervisor']
         agency_id = request.form['agency_id']
-        print(name)
+        
         if log_id:
             log_id = int(log_id)
             log_item = AgencyLog.query.get(log_id)

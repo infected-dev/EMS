@@ -15,8 +15,11 @@ Edit Visitor Data
                 </h4>
                 <div class="card-body">
                     <div class=" ml-2">
-                       
+                                        {% if current_user.user_plant == 3 %}
                                         <form method="POST" action="{{url_for('edit.edit_visitor')}}">
+                                        {% else %}
+                                        <form method="POST" action="{{url_for('sachin.edit_visitor_sachin')}}">
+                                        {% endif %}
                                             <div class="form-group">
                                                 <label for="selected_date">Choose Date:</label>
                                                <input class="form-control" type="date" name="selected_date" autofocus>

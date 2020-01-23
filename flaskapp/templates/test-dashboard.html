@@ -152,13 +152,8 @@
                         
                 </div>
                 <div class=" shadow">
-                        <input type="submit" class="btn btn-warning " value="Search">
-<<<<<<< HEAD
-                        
-=======
+                        <input type="submit" class="btn btn-warning " value="Search"></div>
 
->>>>>>> b69d1e786dd8c15d36eb7736ac7d2db53669e280
-                </div> 
             </form>
         
 
@@ -178,7 +173,14 @@
         <nav style="margin-top: 59px; " id="sidenav-main" class="collapse d-none d-md-block bg-light sidebar border-top">
             <div id="sidenav-styles" class="sidebar-sticky rounded-top accordion">
                 {% if current_user.user_role == 2 or current_user.user_role == 4  %}
-                    
+                <div class="text-center mb-3 mt-3">
+                    {% if current_user.user_plant == 3 %}
+                    <p class="h5 text-info lead">SVKPPL MD01</h3>
+                {% else %}
+                <p class="h5 text-info lead ">Weaving WE01</h3>
+                {% endif %}
+                </div>
+               
                     <h3
                         class="hvr-sweep-to-bottom  sidebar-heading d-flex justify-content-between align-items-center px-3 mt-1 mb-1 text-muted">
 
@@ -247,6 +249,7 @@
                 </ul>
 
                 {% else %}
+                <!-- Side Nav for Sachin APP Dataentry -->
                 <h3
                 class="hvr-sweep-to-bottom sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
 
@@ -270,25 +273,10 @@
                     </a>
                     
                 </li>
-                <ul>
-                    <li><a style="color: white;" href="{{url_for('agencyapp.tools_agency')}}">Agency Toolboxs</a></li>
-                </ul>   
-
-
-                <li class="  nav-item">
-                    <a class=" nav-link" href="{{url_for('dataentry.post_vehicles')}}">
-                        <span style="font-size: 1rem;" data-feather="file-text">Vehicles</span>
-
-                    </a>
-                    <ul>
-                        <li class="nav-item"><a class="nav-link" href="{{url_for('dataentry.post_vehicles')}}"
-                                style="color: white;">Outside Vehicles</a> </li>
-                        <li class="nav-item"><a class="nav-link" href="{{url_for('dataentry.post_mill')}}"
-                                style="color: white;">Mill Vehicles </a> </li>
-                    </ul>
-                </li>
             </ul>
+                
                 {% endif %}
+
                 {% endif %}
 
                 {% if current_user.user_role == 1 or current_user.user_role == 2 or current_user.user_role == 3 %}
@@ -329,7 +317,31 @@
                     </li>
                 </ul>
                 {% else %}
+                <!-- Side Nav for SachinAPP Edit Data -->
+                <h3
+                class="hvr-sweep-to-bottom sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
 
+                <a data-toggle="collapse" data-target="#editentry-links"
+                    class="d-flex align-items-center text-muted mt-2 p-1 text-decoration-none" href="#">
+                    <span style="font-size: 1.25rem;"> Edit Data</span>
+                    <i style="color:wheat;" class=" ml-3 fas fa-angle-down fa-2x"></i>
+                </a>
+            </h3>
+            <ul data-parent="#sidenav-styles" id="editentry-links" class="collapse nav flex-column mb-2">
+                <li class="hvr-underline-from-center nav-item">
+                    <a class="nav-link" href="{{url_for('sachin.edit_visitor_sachin')}}">
+                        <span style="font-size: 1rem;" data-feather="file-text">Visitors</span>
+
+                    </a>
+                </li>
+                <li class="hvr-underline-from-center nav-item">
+                    <a class="nav-link" href="{{url_for('sachin.edit_agency_sachin')}}">
+                        <span style="font-size: 1rem;" data-feather="file-text">Agency</span>
+
+                    </a>
+                </li>
+
+            </ul>
                 {% endif %}
                 {% endif %}
 
@@ -447,7 +459,37 @@
                     </li>
                 </ul>
                 {% else %}
+                <h3
+                    class="hvr-sweep-to-bottom sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
 
+                    <a data-toggle="collapse" data-target="#report-links"
+                        class="d-flex align-items-center text-muted mt-2 p-1 text-decoration-none" href="#">
+                        <span style="font-size: 1.25rem;"> Reports</span>
+                        <i style="color:wheat;" class=" ml-3 fas fa-angle-down fa-2x"></i>
+                    </a>
+                </h3>
+                <ul data-parent="#sidenav-styles" id="report-links" class=" collapse nav flex-column mb-2">
+                    <li class="hvr-underline-from-center nav-item">
+                        <a class=" nav-link" href="{{url_for('sachin.report_visitor_sachin')}}">
+                            <span style="font-size: 1rem;" data-feather="file-text">Visitors</span>
+                            
+                        </a>
+                       
+                    </li>
+
+                   
+
+                    <li class="hvr-underline-from-center nav-item">
+                        <a class=" nav-link" href="{{url_for('sachin.report_agency_sachin')}}">
+                            <span style="font-size: 1rem;" data-feather="file-text">Agency</span>
+                            
+                        </a>
+                       
+                    </li>
+
+                   
+                </ul>
+                
                 {%  endif%}
                 {% endif %}
             </div>

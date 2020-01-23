@@ -25,8 +25,11 @@ Edit Agency Data
             </h4>
             <div class="card-body">
                 <div class=" ml-2">
-
+                    {% if current_user.user_plant == 3 %}
                     <form method="POST" action="{{url_for('agencyapp.edit_agency')}}">
+                    {% else %}
+                    <form method="POST" action="{{url_for('sachin.edit_agency_sachin')}}">
+                    {% endif %}
                         <div class="form-group">
                             <label for="selected_date">Choose Date:</label>
                             <input id="selected_date" class="form-control" type="date" name="selected_date" value="{{date}}" autofocus>

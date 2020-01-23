@@ -9,6 +9,7 @@ class Plant(db.Model):
     plant_name = db.Column(db.String(20))
     locatoin = db.Column(db.String(20))
     departments = db.relationship('Department', backref="plant_name")
+    visitors = db.relationship('Visitor', backref="plant_name")
 
     def __init__(self, plant_name, locatoin):
         self.plant_name = plant_name
@@ -41,8 +42,9 @@ class Location(db.Model):
     log = db.relationship('AgencyLog', backref='locationm', lazy=True)
     
 
-    def __init__(self, location_name):
+    def __init__(self, location_name, plant_id):
         self.location_name = location_name.upper()
+        self.plant_id = plant_id
 
     def check_location(name):
         loc = Location.query.filter_by(location_name=name).first()
@@ -68,8 +70,9 @@ class Supervisor(db.Model):
     plant_id = db.Column(db.Integer, db.ForeignKey('agencyplant.id'))
     log = db.relationship('AgencyLog', backref='superm', lazy=True)
 
-    def __init__(self, supervisor_name):
+    def __init__(self, supervisor_name, plant_id):
         self.supervisor_name = supervisor_name.upper()
+        self.plant_id = plant_id
     
     def check_supervisor(name):
         supvisor = Supervisor.query.filter_by(supervisor_name=name).first()
@@ -95,8 +98,9 @@ class AgencyMast(db.Model):
     plant_id = db.Column(db.Integer, db.ForeignKey('agencyplant.id'))
     log = db.relationship('AgencyLog', backref='agenm', lazy=True)
 
-    def __init__(self, agency_name):
+    def __init__(self, agency_name, plant_id):
         self.agency_name = agency_name.upper()
+        self.plant_id = plant_id
 
     def check_agency( name):
         agen = AgencyMast.query.filter_by(agency_name=name).first()
@@ -113,6 +117,7 @@ class AgencyMast(db.Model):
         db.session.commit()
 
 class AgencyPlant(db.Model):
+    __bind_key__ = 'agency'
     __tablename__ = 'agencyplant'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -128,8 +133,9 @@ class WorkType(db.Model):
     plant_id = db.Column(db.Integer, db.ForeignKey('agencyplant.id'))
     log = db.relationship('AgencyLog', backref='wtyp', lazy=True)
 
-    def __init__(self, work_type):
+    def __init__(self, work_type, plant_id):
         self.work_type = work_type.upper()
+        self.plant_id = plant_id
 
     def check_work( wtype):
         wtyp = WorkType.query.filter_by(work_type=wtype).first()

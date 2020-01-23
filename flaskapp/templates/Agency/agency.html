@@ -22,7 +22,11 @@ Agency Logging
             <div class="card">
                 <h5 class="card-header">Agency Data Entry</h5>
                 <div class="card-body">
+                    {% if current_user.user_plant == 3 %}
                     <form action="{{url_for('agencyapp.add_log')}}" , method="POST">
+                        {% else %}
+                        <form action="{{url_for('sachin.add_agency_sachin')}}" , method="POST">
+                        {% endif %}
                         <div class="form-row mb-2">
                             <div class="col-2">
                                 <label for="date" class="form-label">Date</label>

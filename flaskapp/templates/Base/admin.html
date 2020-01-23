@@ -369,6 +369,7 @@ Admin Panel
                             <th>Name</th>
                             <th>Contact Number</th>
                             <th>Place From</th>
+                            <th>Plant</th>
                             <th>Actions</th>
                         </thead>
                         <tbody>
@@ -378,6 +379,7 @@ Admin Panel
                                 <td id="visitor_name{{v.id}}">{{v.name}}</td>
                                 <td id="visitor_contact{{v.id}}">{{v.contact}}</td>
                                 <td id="visitor_place{{v.id}}">{{v.place_from}}</td>
+                                <td id="visitor_pant{{v.id}}">{{v.plant_name.plant_name}}</td>
                                 <td>
                                     <button data-id="{{v.id}}" class="btn btn-primary btn-warning" data-toggle="modal"
                                         data-target="#editvisitor">Edit</button>
@@ -453,6 +455,12 @@ Admin Panel
                         <h3>Add New Agency</h3>
                         <label for="agencyname">Agency Name:</label>
                         <input type="text" class="form-control" name="agency_name" required>
+                        <label for="plant_id">Plant:</label>
+                        <select id="plant_id" type="text" name="plant_id">
+                            {% for p in plants %}
+                                <option value="{{p.id}}">{{p.plant_name}}</option>
+                                {% endfor %}
+                            </select>
                         <input type="submit" class="btn mt-1 btn-block btn-primary">
 
                     </form>
@@ -461,6 +469,7 @@ Admin Panel
                             <tr>
                                 <th>ID</th>
                                 <th>AgencyName</th>
+                                <th>Plant</th>
                                 <th>Update</th>
                             </tr>
                         </thead>
@@ -469,6 +478,7 @@ Admin Panel
                             <tr>
                                 <td id="agency_id{{a.a_aid}}">{{a.a_id}}</td>
                                 <td id="agency_name{{a.a_id}}">{{a.agency_name.title()}}</td>
+                                <td>{{a.plant_id}}</td>
                                 <td>
                                     <input type="hidden" name="agency_name" value="{{a.a_id}}">
                                     <button data-id="{{a.a_id}}" class="btn btn-primary btn-warning" data-toggle="modal"

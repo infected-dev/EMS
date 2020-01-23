@@ -144,22 +144,12 @@ def admin_user():
 @admin.route('/admin/post/agency', methods=['POST'])
 def admin_agency():
     if request.form:
-        function = request.form['f_id']
-        if function:
-            function = int(function)
-            if function == 1:
-                a_id = int(request.form['a_id'])
-                a_name = request.form['a_name']
-                agency = AgencyMast.query.get(a_id)
-                agency.agency_name = a_name
-                db.session.commit()
-                return {'status':'done'}
-        else:        
-            name = request.form.get('agency_name')
-            agency = AgencyMast(agency_name=name)
-            db.session.add(agency)
-            db.session.commit()
-            return redirect(url_for('admin.admin_main'))
+        name = request.form.get('agency_name')
+        plant_id = request.form.get('plant_id')
+        agency = AgencyMast(agency_name=name, plant_id=plant_id)
+        db.session.add(agency)
+        db.session.commit()
+        return redirect(url_for('admin.admin_main'))
 
 @admin.route('/admin/post/location', methods=['POST'])
 def admin_location():
