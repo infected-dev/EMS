@@ -1,5 +1,6 @@
 from flask import Blueprint, redirect, request, url_for, render_template, flash, jsonify
-from .models import Visitor, Timesheet_Visitor, AgencyLog, AgencyMast, Department, Location, Employee, Supervisor, Activity
+from .models import Visitor, Timesheet_Visitor, AgencyLog, AgencyMast, Department, Location, Employee, Supervisor,\
+    Plant,Activity
 from . import db    
 from .cust_functions import *
 from datetime import datetime
@@ -12,10 +13,13 @@ def main_sachin():
     today_date = datetime.now().date()
     today_time = (datetime.now().time()).strftime("%H:%M")
     visitors = Visitor.query.filter_by(plant_id=4).all()
-    today_visitor = Timesheet_Visitor.query.filter_by(plant_id=4).all()
-    return render_template('Dataentry/dataentry-visitors.html', visitors=visitors, today_date=today_date, today_visitor=today_visitor)
+    today_visitors = Timesheet_Visitor.query.filter_by(plant_id=4).all()
+    employees = db.session.query(Employee).join(Department).filter(Department.plant_id==4).all()
+    return render_template('Dataentry/dataentry-visitors.html', visitors=visitors, today_date=today_date,
+                           today_visitors=today_visitors, employees=employees)
 
-@sachinapp.route('/sachin/newvisitor')
+
+@sachinapp.route('/sachin/newvisitor', methods=['POST'])
 def visitors_post():
    if request.form:
        name = request.form.get('visitorname').upper()
@@ -47,4 +51,8 @@ def visitors_post():
        timelog = Timesheet_Visitor(visitor_id=visitor.id, activity_id=activity.id, extras=extras , date=date, in_time=time, plant_id=4)
        db.session.add(timelog)
        db.session.commit()
-       return redirect(url_for('sachinapp.main_sachin'))   
+       return redirect(url_for('sachin.main_sachin'))
+
+@sachinapp.route('/sachin/agency')
+def agency_sachin():
+    return render_template('Agency/agency.html')
