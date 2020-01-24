@@ -56,11 +56,12 @@ def visitors_post():
 def agency_sachin():
     date = datetime.now().date()
     time = (datetime.now().time()).strftime("%H:%M")
-    log = db.session.query(AgencyLog).join(Location).filter(AgencyLog.date == date,Location.plant_id == 4).all()
+    log = db.session.query(AgencyLog).join(Location).filter(AgencyLog.date == date, Location.plant_id == 4).all()
     supervisors = Supervisor.query.filter_by(plant_id=4).all()
     worktypes = WorkType.query.filter_by(plant_id=4).all()
     agencies = AgencyMast.query.filter_by(plant_id=4).all()
     locations = Location.query.filter_by(plant_id=4).all()
+    print(log)
     return render_template('Agency/agency.html', date=date, supervisors=supervisors, log=log, worktypes=worktypes, agencies=agencies, locations=locations )
 
 @sachinapp.route('/sachin/agency/new', methods=['POST'])
@@ -122,8 +123,9 @@ def add_agency_sachin():
         if Location.check_location(name=location) is None:
             loc = Location(location_name=location, plant_id=4)
             db.session.add(loc)
+            
             db.session.commit()
-
+            print(loc)
             loc = loc.lid
         else:
             loc = Location.query.filter_by(location_name=location).first()
@@ -163,8 +165,191 @@ def edit_agency_sachin():
 
 @sachinapp.route('/sachin/report/visitor')
 def report_visitor_sachin():
-    return render_template('Reports/report-visitors.html')
+    error = None
+    today = datetime.now().date()
+    
+    departments = Department.query.filter_by(plant_id=4).all()
+    visitors = Timesheet_Visitor.query.filter(Timesheet_Visitor.date == today, Timesheet_Visitor.plant_id==4).all()
+    return render_template('Reports/report-visitors.html', departments=departments, visitors=visitors)
+
+@sachinapp.route('/sachin/report/print', methods=['POST'])
+def sachin_report_print():
+    count = 0
+    if request.form:
+        print_id = request.form.get('printid')
+        date = datetime.strptime(
+                request.form.get('date'), '%Y-%m-%d').date()
+        if print_id == '1':
+            title = 'Visitor Records'
+            query = Timesheet_Visitor.query.filter(Timesheet_Visitor.date==date, Timesheet_Visitor.plant_id == 4).all()
+            count = len(query)
+            count_extra = 0
+            for i in query:
+                if i.extras is not None :
+                    a = i.extras
+                    count_extra = count_extra + a
+
+            return render_template('Reports/report-visitors-print.html',count=count, query=query, date=date, title=title, count_extra=count_extra)
+        elif print_id == '8':
+            title = 'Visitor Records Sorted by Employee Visited'
+            query = Timesheet_Visitor.query.filter(Timesheet_Visitor.date==date, Timesheet_Visitor.plant_id == 4).all()
+            count = len(query)
+            count_extra = 0
+            for i in query:
+                if i.extras is not None :
+                    a = i.extras
+                    count_extra = count_extra + a
+            return render_template('Reports/report-visitors-print.html',count=count, query=query, date=date, title=title, count_extra=count_extra)
+        elif print_id == '10':
+            title = 'Visitor Records Sorted By Department'
+            query =  Timesheet_Visitor.query.filter(Timesheet_Visitor.date==date, Timesheet_Visitor.plant_id == 4).all()
+            count = len(query)
+            
+            return render_template('Reports/report-visitors-print.html',count=count, query=query, date=date, title=title)
+        elif print_id == '9': 
+            dept_check = request.form.get('deptcheck')
+            if dept_check:
+                title = 'Visitor Records Sorted by Department'
+                query = Timesheet_Visitor.query.filter(Timesheet_Visitor.date==date, Timesheet_Visitor.plant_id == 4).all()
+                count = len(query)
+                
+                return render_template('Reports/report-visitors-print.html',count=count, query=query, date=date, title=title)
+            else:
+                department_id = int(request.form.get('department'))
+                department = Department.query.get(department_id)
+                query = Timesheet_Visitor.query.filter(Timesheet_Visitor.date==date, Timesheet_Visitor.plant_id == 4).all()
+                count_extra = 0
+               
+                filtered_list = []
+                for i in query:
+                    if i.active.visiting_department == department_id:
+                        filtered_list.append(i)
+                title = 'Visitors Records by Department'
+                count = len(filtered_list)
+                return render_template('Reports/report-visitors-print.html',department=department, title=title, count=count, 
+                    filtered_list=filtered_list, date=date)
+        elif print_id=='13':
+             title = 'Consolidated Visitor Report'
+             date_2 = datetime.strptime(
+                request.form.get('date2'), '%Y-%m-%d').date() 
+            
+             query = Timesheet_Visitor.query.filter(Timesheet_Visitor.date.between(date, date_2),Timesheet_Visitor.plant_id == 4)
+             count = query.count()
+             count_extra = 0
+             delta = date_2 - date
+             for i in query:
+                 if i.extras:
+                     count_extra += i.extras
+             return render_template('Reports/report-visitors-print.html', title=title, count=count, count_extra=count_extra, 
+                                    date=date, date_2=date_2, query=query, delta=delta)
+
+
 
 @sachinapp.route('/sachin/report/agency')
 def report_agency_sachin():
-    return render_template('Reports/report-agency.html')
+    today = datetime.now().date()
+    log = db.session.query(AgencyLog).join(Location).filter(Location.plant_id == 4).all()
+    locations = Location.query.filter_by(plant_id=4).all()
+    agency_mast = AgencyMast.query.filter_by(plant_id=4).all()
+    supervisors = Supervisor.query.filter_by(plant_id=4).all()
+    return render_template('Reports/report-agency.html',log=log,
+                            locations=locations, agency_mast=agency_mast,
+                            supervisors=supervisors)
+
+@sachinapp.route('/sachin/report/agency/print', methods=['POST'])
+def sachin_report_agency_print():
+        if request.form:
+            printid = int(request.form.get('printid'))
+            date = request.form.get('date')
+            if date:
+                date =  datetime.strptime(date, '%Y-%m-%d').date()
+
+            if printid == 1:
+                title = 'Agency Records'
+                logs = db.session.query(AgencyLog).join(Location).filter(AgencyLog.date == date, Location.plant_id == 4).all()
+                count = len(logs)
+                extras = 0
+                for i in logs:
+                    if i.manpower:
+                        a = i.manpower
+                        extras+=a
+
+                return render_template('Reports/agency-report-print.html', logs=logs, title=title,
+                                        date=date, count=count, extras=extras)
+            elif printid == 2:
+                check = request.form.get('deptcheck')
+                loc = request.form.get('loc')
+                if check:
+                    title = 'Agency Records Sorted by Location'
+                    logs = AgencyLog.query.filter_by(date=date).all()
+                else:
+                    title = 'Agency Report By Location'
+                    if date:
+                        logs = AgencyLog.query.filter(AgencyLog.date==date, AgencyLog.location_id==loc).all()
+                    else:
+                        loc_logs = Location.query.get(loc)
+                        logs = loc_logs.log
+                    
+
+                count = len(logs)
+                extras = 0
+                for i in logs:
+                    if i.manpower:
+                        a = i.manpower
+                        extras+=a
+                return render_template('Reports/agency-report-print.html', logs=logs, title=title,
+                                        date=date, count=count, extras=extras)
+            elif printid == 3:
+                agency_id = request.form.get('agency_name')
+
+                if agency_id:
+                    agency_id = int(agency_id)
+                    agency_log = AgencyMast.query.get(agency_id)
+                    logs = agency_log.log
+                    count = len(logs)
+                    extras = 0
+                    for i in logs:
+                        if i.manpower:
+                            extras += i.manpower
+                    title = 'Agency Report'
+                    return render_template('Reports/agency-report-print.html', logs=logs, title=title,
+                                            count=count, extras=extras)
+
+        elif printid == 5:
+            date_2 = datetime.strptime(request.form.get('date2'), '%Y-%m-%d').date()
+            title = 'Consolidated Agency Report'
+            logs = AgencyLog.query.filter(AgencyLog.date.between(date, date_2))
+            extras = 0
+            count = logs.count()
+            delta = date_2 - date
+            for i in logs:
+                if i.manpower:
+                    extras += i.manpower
+            return render_template('Reports/agency-report-print.html', logs=logs, title=title,
+                                         extras=extras, count=count, date=date, date_2=date_2, delta=delta)
+        
+        elif printid == 7 :
+            date_2 = datetime.strptime(request.form.get('date2'), '%Y-%m-%d').date()
+            title = 'Consolidated Agency Report by location'
+            location = request.form.get('loc')
+            loc = Location.query.get(location)
+            logs = AgencyLog.query.filter(AgencyLog.date.between(date, date_2), AgencyLog.location_id == location)
+            delta = date_2 - date
+            return render_template('Reports/agency-report-print.html', logs=logs, title=title, loc=loc, date=date, date_2=date_2, delta=delta)
+
+        elif printid == 8:
+            title = 'Supervisor Report'
+            supervisor = request.form.get('supervisor_name')
+            logs = AgencyLog.query.filter_by(Supervisor_id=supervisor)
+            count = logs.count()
+            extra = 0
+            for i in logs:
+                if i.manpower:
+                    extra += i.manpower
+            return render_template('Reports/agency-report-print.html', logs=logs, title=title,
+                                         extra=extra, count=count)
+
+        else:
+            flash('Wrong Inputs')
+            redirect(url_for('sachin.report_agency_sachin'))
+   

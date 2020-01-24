@@ -42,7 +42,12 @@ Agency Report
                             aria-hidden="true">&times;</span></button>
                 </div>
                 <div class="modal-body">
+                    {% if current_user.user_plant == 3 %}
                     <form class="form-row" action="{{url_for('agencyapp.print_agency_report')}}" method="POST">
+
+                    {% else %}
+                    <form class="form-row" action="{{url_for('sachin.sachin_report_agency_print')}}" method="POST">
+                    {% endif %}
                         <input type="hidden" name="printid" value="1">
                         <label class=" mb-2 h6 col-form-label" for="#date">Select Date : </label>
                         <input id="date" type="date" class="form-control" name="date" autofocus>
@@ -81,7 +86,12 @@ Agency Report
                 </div>
 
                 <div class="modal-body">
+                    {% if current_user.user_plant == 4 %}
                     <form class="form-row" action="{{url_for('agencyapp.print_agency_report')}}" method="POST">
+                    {% else %}
+                    <form class="form-row" action="{{url_for('sachin.sachin_report_agency_print')}}" method="POST"></form>
+                    {% endif %}
+                    
                         <div class="form-group">
                             <label class="col-form-label" for="loc">Select Location:</label>
                             <select class="form-control" name="loc" id="loc" autofocus>
@@ -109,8 +119,12 @@ Agency Report
                         <input type="submit" class="mt-2 btn btn-primary btn-block btn-sm" value="Print">
 
                     </form>
+                    {% if current_user.user_plant == 3 %}
                     <form class="mt-2" action="{{url_for('agencyapp.print_agency_report')}}" method="POST">
-
+                    {% else %}
+                    <form class="form-row" action="{{url_for('sachin.sachin_report_agency_print')}}" method="POST">
+                    {% endif %}
+                        
                         <p><strong>Consolidated Report</strong></p>
                         <div class="form-row">
                             <input type="hidden" name="printid" value="7">
@@ -152,7 +166,11 @@ Agency Report
                             aria-hidden="true">&times;</span></button>
                 </div>
                 <div class="modal-body">
+                    {% if current_user.user_plant == 3 %}
                     <form class="form-row" action="{{url_for('agencyapp.print_agency_report')}}" method="POST">
+                    {% else %}
+                    <form class="form-row" action="{{url_for('sachin.sachin_report_agency_print')}}" method="POST">
+                    {% endif %}
                         <div class="form-group">
                             <label class="mb-2 h6 col-form-label" for="#agency_name">Select Agency</label>
                             <select class="form-control" name="agency_name">
@@ -184,7 +202,11 @@ Agency Report
                             aria-hidden="true">&times;</span></button>
                 </div>
                 <div class="modal-body">
+                    {% if current_user.user_plant == 3 %}
                     <form class="form-row" action="{{url_for('agencyapp.print_agency_report')}}" method="POST">
+                    {% else %}
+                    <form class="form-row" action="{{url_for('sachin.sachin_report_agency_print')}}" method="POST">
+                    {% endif %}
                         <div class="form-group">
                             <label class="mb-2 h6 col-form-label" for="#supervisor_name">Select Supervisor</label>
                             <select class="form-control" name="supervisor_name">

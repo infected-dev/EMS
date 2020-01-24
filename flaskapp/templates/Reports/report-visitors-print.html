@@ -48,9 +48,17 @@
                 <div class="printclass">
                         <div id="header" class="text-center">
                             <h5 class="mb-0">Siddhi Vinayak Knots and Prints Pvt. Ltd.</h5>
+                            {% if current_user.user_plant == 3 %}
                             <p class=" mb-0 text-muted">A-26 To A-32, "Central Park", G.I.D.C Pandesra, SURAT-394221.
                                 </p>
+                            {% else %}
+                            <p class=" mb-0 text-muted">Notified Gate No. 2, Sachin Plot No. 1, Block No. 243-246, Sachin-394230
+                            </p>
+                            <h6 class="">Weaving Plant</h6>
+                            {% endif %}
+                            
                                 <h5 class="mb-0 mt-2">{{title}}</h5>
+                                
                         </div>
                         {% if title == 'Visitor Records' %}
                         <div class="mr-2 mb-2 row">
