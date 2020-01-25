@@ -36,7 +36,7 @@ def add_log():
         worktyp = request.form.get('worktype')
         represent = request.form.get('rprname')
         vehicle = request.form.get('ifvehicle')
-        remark = request.form.get('remark')
+        remark = request.form.get('remarks')
         supervisor = request.form.get('supervisor').upper()
         location = request.form.get('location').upper()
         date = datetime.strptime(request.form.get('date'), '%Y-%m-%d').date()
