@@ -443,7 +443,7 @@
                         </div>
 
                         <div id='tableclass' class="m">
-                            <table class="mb-4 table table-sm table-bordered">
+                            <table class="mb-4 table table-sm table-bordered auto-index">
                                 <thead>
                                     <tr class="text-center">
                                         <th>#</th>
@@ -499,7 +499,83 @@
                         {% endfor %}
                         {% endif %}
 
-                        {% if title == 'Supervisor Wise Report' %}
+                        
+                        {% if title == 'Consolidated Report of Agency' %}
+                      
+                        <div class="col text-center">
+                            
+                        </div>
+                        
+                        <div class="mr-2 mb-2 row">
+                            {% for group in logs | groupby('date') %}   
+                            <div class="ml-4">
+
+                               
+                                   <p style="page-break-before:always"><strong class="pagebreak"> Date: {{group.grouper.strftime('%d/%m/%Y')}} <em>(Total :  {{group.list | length}})</em> </strong></p>
+                                     
+                               
+                             </div>
+                            
+                        </div>
+
+                        <div id='tableclass' class="m">
+                            <table class="mb-4 table table-sm table-bordered auto-index">
+                                <thead>
+                                    <tr class="text-center">
+                                        <th>#</th>
+                                        <th>Order No</th>
+                                        <th>Agency Name</th>
+                                        
+                                        <th>Work Type</th>
+                                        <th>Head</th>
+                                        <th>Extras</th>
+                                        <th>In Time</th>
+                                        <th>Out Time</th>
+                                        <th>Duration</th>
+                                        <th>Supervisor</th>
+                                        
+                                        <th>Vehicle</th>
+                                        <th>Remarks</th>
+                                    </tr>
+                                </thead>
+                                
+                                <tbody>
+                                    {% for q in group.list  %}
+                                     <tr class="auto-index">
+                                            <td></td>
+                                            <td>{{q.order}}</td>
+                                            <td>{{q.agenm.agency_name}}</td>
+                                            <td>{{q.wtyp.work_type}}</td>
+                                            <td>{{q.contact_person}}</td>
+                                            <td>{{q.manpower}}</td>
+
+                                            {% if q.in_time %}
+                                            <td>{{q.in_time.strftime('%H:%M')}}</td>
+                                            {% else %}
+                                            <td></td>
+                                            {% endif %}
+
+                                            {% if q.out_time %}
+                                            <td>{{q.out_time.strftime('%H:%M')}}</td>
+                                            {% else %}
+                                            <td></td>
+                                            {% endif %}
+
+                                            <td>{{q.duration}}</td>
+                                            <td>{{q.superm.supervisor_name}}</td>
+                                            
+                                            <td>{{q.vehicle_no}}</td>
+                                            <td>{{q.remarks}}</td>
+                                    </tr>
+                                    {% endfor %}    
+                                      
+                                </tbody>
+                            </table>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+
+                        {% if title == 'Supervisor Report' %}
                         <div class="mr-2 mb-2 row">
                             
                             <div class="col text-right">
@@ -511,7 +587,7 @@
                         </div>
 
                         <div id='tableclass' class="m">
-                            <table class="mb-4 table table-sm table-bordered">
+                            <table class="mb-4 table table-sm table-bordered auto-index">
                                 <thead >
                                     <tr class="text-center">
                                         <th>#</th>

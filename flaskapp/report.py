@@ -11,7 +11,7 @@ def dashboard():
     today = datetime.now().date()
     ## Daily Vehicles and Visitors Count ##
     
-    query_visitors_today = Timesheet_Visitor.query.filter_by(date=today).count()
+    query_visitors_today = Timesheet_Visitor.query.filter_by(date=today, plant_id=3).count()
     
     ## All Vheicles and Visitor Count ##
    
@@ -68,17 +68,18 @@ def report_main():
     error = None
     today = datetime.now().date()
     yesterday = today - timedelta(days=1)
-    departments = Department.query.all()
+    departments = Department.query.filter_by(plant_id=3).all()
     date = yesterday
-    visitors = Timesheet_Visitor.query.filter_by(date=today).all()
+    visitors = Timesheet_Visitor.query.filter_by(date=today, plant_id=3).all()
     vehicles = Vehicle.query.all()
+    vis = Visitor.query.filter_by(plant_id=3).all()
     return render_template('Reports/report-visitors.html',departments=departments, date=date.strftime('%d-%b-%Y')
-    , visitors=visitors, vehicles=vehicles, error=error)
+    , visitors=visitors, vehicles=vehicles, error=error, vis=vis)
 
 
 @report.route('/report/vehicles')
 def report_vehicles():
-    depts = Department.query.all()
+    depts = Department.query.filter_by(plant_id=3).all()
     query_vehicles_outside = Vehicle.query.all()
     return render_template('Reports/report-vehicles.html',query_vehicles_outside=query_vehicles_outside, 
        depts=depts)
@@ -107,11 +108,13 @@ def report_print():
     count = 0
     if request.form:
         print_id = request.form.get('printid')
-        date = datetime.strptime(
-                request.form.get('date'), '%Y-%m-%d').date()
+        date = request.form.get('date')
+        if date:
+            date = datetime.strptime(
+                    date, '%Y-%m-%d').date()
         if print_id == '1':
             title = 'Visitor Records'
-            query = Timesheet_Visitor.query.filter_by(date=date).all()
+            query = Timesheet_Visitor.query.filter_by(date=date, plant_id=3).all()
             count = len(query)
             count_extra = 0
             for i in query:
@@ -146,7 +149,7 @@ def report_print():
             return render_template('Reports/report-vehicles-print.html', query=query, title=title,count=count, date=date)
         elif print_id == '8':
             title = 'Visitor Records Sorted by Employee Visited'
-            query = Timesheet_Visitor.query.filter_by(date=date).all()
+            query = Timesheet_Visitor.query.filter_by(date=date, plant_id=3).all()
             count = len(query)
             count_extra = 0
             for i in query:
@@ -156,7 +159,7 @@ def report_print():
             return render_template('Reports/report-visitors-print.html',count=count, query=query, date=date, title=title, count_extra=count_extra)
         elif print_id == '10':
             title = 'Visitor Records Sorted By Department'
-            query = Timesheet_Visitor.query.filter_by(date=date).all()
+            query = Timesheet_Visitor.query.filter_by(date=date, plant_id=3).all()
             count = len(query)
             
             return render_template('Reports/report-visitors-print.html',count=count, query=query, date=date, title=title)
@@ -164,14 +167,14 @@ def report_print():
             dept_check = request.form.get('deptcheck')
             if dept_check:
                 title = 'Visitor Records Sorted by Department'
-                query = Timesheet_Visitor.query.filter_by(date=date).all()
+                query = Timesheet_Visitor.query.filter_by(date=date, plant_id=3).all()
                 count = len(query)
                 
                 return render_template('Reports/report-visitors-print.html',count=count, query=query, date=date, title=title)
             else:
                 department_id = int(request.form.get('department'))
                 department = Department.query.get(department_id)
-                query = Timesheet_Visitor.query.filter_by(date=date).all()
+                query = Timesheet_Visitor.query.filter_by(date=date, plant_id=3).all()
                 count_extra = 0
                
                 filtered_list = []
@@ -187,8 +190,8 @@ def report_print():
              date_2 = datetime.strptime(
                 request.form.get('date2'), '%Y-%m-%d').date() 
             
-             query = Timesheet_Visitor.query.filter(Timesheet_Visitor.date.between(date, date_2))
-             count = query.count()
+             query = Timesheet_Visitor.query.filter(Timesheet_Visitor.date.between(date, date_2),Timesheet_Visitor.plant_id != 4)
+             count = len(query)
              count_extra = 0
              delta = date_2 - date
              for i in query:
@@ -196,6 +199,36 @@ def report_print():
                      count_extra += i.extras
              return render_template('Reports/report-visitors-print.html', title=title, count=count, count_extra=count_extra, 
                                     date=date, date_2=date_2, query=query, delta=delta)
+        elif print_id=='14':
+            title = 'Visitor Wise Report'
+            vis_id = int(request.form.get('visitor_id'))
+            query = Timesheet_Visitor.query.filter_by(visitor_id=vis_id).all()
+
+            count = len(query)
+
+            count_extra = 0 
+            for i in query:
+                if i.extras:
+                    count_extra += i.extras
+            return render_template('Reports/report-visitors-print.html', title=title, count=count, count_extra=count_extra, 
+                                    query=query)
+
+        elif print_id == '16':
+            title = 'Consolidated Visitor to Department Report'
+            date_2 = datetime.strptime(
+                request.form.get('date2'), '%Y-%m-%d').date() 
+            department = request.form.get('department')
+            
+            query = db.session.query(Timesheet_Visitor).join(Activity).filter(Timesheet_Visitor.date.between(date, date_2), Activity.visiting_department == department).all()
+            
+            count = len(query)
+            count_extra = 0
+            delta = date_2 - date
+            for i in query:
+                 if i.extras:
+                     count_extra += i.extras
+            return render_template('Reports/report-visitors-print.html', title=title, count=count, count_extra=count_extra,date=date, date_2=date_2, query=query, delta=delta)
+
 
 
 @report.route('/print-slip', methods=['POST'])

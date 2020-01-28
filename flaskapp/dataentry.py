@@ -155,7 +155,7 @@ def post_format():
     today_visitors = Timesheet_Visitor.query.filter_by(date=today_date).all()
     employees = Employee.query.all()
     types = VehicleTypes.query.all()
-    visitors = Visitor.query.all()
+    visitors = Visitor.query.filter_by(plant_id=3).all()
     return render_template('Dataentry/dataentry-visitors.html', today_time=today_time, 
         today_date=today_date, types=types, employees=employees, 
         today_visitors=today_visitors, visitors=visitors)

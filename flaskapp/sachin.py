@@ -242,8 +242,19 @@ def sachin_report_print():
                      count_extra += i.extras
              return render_template('Reports/report-visitors-print.html', title=title, count=count, count_extra=count_extra, 
                                     date=date, date_2=date_2, query=query, delta=delta)
+        elif print_id=='14':
+            title = 'Visitor Wise Report'
+            vis_id = int(request.form.get('visitor_id'))
+            query = Timesheet_Visitor.query.filter_by(visitor_id=vis_id).all()
 
+            count = len(query)
 
+            count_extra = 0 
+            for i in query:
+                if i.extras:
+                    count_extra += i.extras
+            return render_template('Reports/report-visitors-print.html', title=title, count=count, count_extra=count_extra, 
+                                    query=query)
 
 @sachinapp.route('/sachin/report/agency')
 def report_agency_sachin():

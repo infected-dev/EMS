@@ -16,7 +16,7 @@ def edit_visitor():
     if request.form:
         selected_date = request.form.get('selected_date')
         date = datetime.strptime(selected_date, '%Y-%m-%d').date()
-        backdate_visitors = Timesheet_Visitor.query.filter_by(date=date).all()
+        backdate_visitors = Timesheet_Visitor.query.filter_by(date=date, plant_id=3).all()
     return render_template('Edits/edit-Visitor.html', backdate_visitors=backdate_visitors,emps=emps)
 
 

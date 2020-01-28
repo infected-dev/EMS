@@ -1,5 +1,5 @@
 from flask import Blueprint, redirect, request, url_for, render_template, flash, jsonify
-from .models import AgencyLog, AgencyMast, Location, Supervisor, WorkType, ToolLog
+from .models import AgencyLog, AgencyMast, Location, Supervisor, WorkType, ToolLog, AgencyPlant
 from . import db    
 from .cust_functions import *
 from datetime import datetime
@@ -12,11 +12,11 @@ agencyapp = Blueprint('agencyapp', __name__)
 def agency_main():
     date = datetime.now().date()
     time = (datetime.now().time()).strftime("%H:%M")
-    log = AgencyLog.query.filter_by(date=date).all()
-    supervisors = Supervisor.query.all()
-    worktypes = WorkType.query.all()
-    agencies = AgencyMast.query.all()
-    locations = Location.query.all()
+    log = db.session.query(AgencyLog).join(Location).filter(AgencyLog.date == date, Location.plant_id != 4).all()
+    supervisors = Supervisor.query.filter(Supervisor.plant_id != 4).all()   
+    worktypes = WorkType.query.filter(WorkType.plant_id != 4).all() 
+    agencies = AgencyMast.query.filter(AgencyMast.plant_id !=4).all()
+    locations = Location.query.filter(Location.plant_id != 4).all()
     return render_template('Agency/agency.html', log=log, supervisors=supervisors,
                             worktypes=worktypes, agencies=agencies, 
                             locations=locations, date=date, time=time)
@@ -100,10 +100,6 @@ def add_log():
         return redirect(url_for('agencyapp.agency_main'))
 
 
-
-    
-
-
 @agencyapp.route('/updateAgency', methods=['POST'])
 def update_agency():
     if request.form:
@@ -125,10 +121,10 @@ def update_agency():
 @agencyapp.route('/reportAgency', methods=['GET','POST'])
 def report_agency():
     today = datetime.now().date()
-    log = AgencyLog.query.all()
-    locations = Location.query.all()
-    agency_mast = AgencyMast.query.all()
-    supervisors = Supervisor.query.all()
+    log =db.session.query(AgencyLog).join(Location).filter(Location.plant_id != 4).all()
+    locations = Location.query.filter(Location.plant_id != 4).all()
+    agency_mast =  AgencyMast.query.filter(AgencyMast.plant_id !=4).all()
+    supervisors =Supervisor.query.filter(Supervisor.plant_id != 4).all()   
     if request.form:
         al_id = int(request.form.get('al_id'))
         log_item = AgencyLog.query.get(al_id)
@@ -149,10 +145,10 @@ def print_agency_report():
         date = request.form.get('date')
         if date:
             date =  datetime.strptime(date, '%Y-%m-%d').date()
-
+           
         if printid == 1:
             title = 'Agency Records'
-            logs = AgencyLog.query.filter_by(date=date).all()
+            logs =db.session.query(AgencyLog).join(Location).filter(AgencyLog.date == date, Location.plant_id != 4).all()
             count = len(logs)
             extras = 0
             for i in logs:
@@ -167,11 +163,11 @@ def print_agency_report():
             loc = request.form.get('loc')
             if check:
                 title = 'Agency Records Sorted by Location'
-                logs = AgencyLog.query.filter_by(date=date).all()
+                logs = db.session.query(AgencyLog).join(Location).filter(AgencyLog.date == date, Location.plant_id != 4).all()
             else:
                 title = 'Agency Report By Location'
                 if date:
-                    logs = AgencyLog.query.filter(AgencyLog.date==date, AgencyLog.location_id==loc).all()
+                    logs = db.session.query(AgencyLog).join(Location).filter(AgencyLog.date == date, Location.plant_id != 4, Location.lid == loc).all()
                 else:
                     loc_logs = Location.query.get(loc)
                     logs = loc_logs.log
@@ -187,24 +183,30 @@ def print_agency_report():
                                     date=date, count=count, extras=extras)
         elif printid == 3:
             agency_id = request.form.get('agency_name')
-
+            date_2 = request.form.get('date2')
+            logs = ''
             if agency_id:
                 agency_id = int(agency_id)
-                agency_log = AgencyMast.query.get(agency_id)
-                logs = agency_log.log
+                if date_2:
+                    agency_log = db.session.query(AgencyLog).join(AgencyMast).filter(AgencyLog.date.between(date, date_2), AgencyMast.a_id==agency_id).all()
+                    logs = agency_log
+                else:
+                    agency_log = AgencyMast.query.get(agency_id)
+                    logs = agency_log.log
                 count = len(logs)
                 extras = 0
                 for i in logs:
                     if i.manpower:
                         extras += i.manpower
-                title = 'Agency Report'
+                title = 'Consolidated Report of Agency'
+
                 return render_template('Reports/agency-report-print.html', logs=logs, title=title,
-                                        count=count, extras=extras)
+                                        count=count, extras=extras, date=date, date_2=date_2)
 
         elif printid == 5:
             date_2 = datetime.strptime(request.form.get('date2'), '%Y-%m-%d').date()
             title = 'Consolidated Agency Report'
-            logs = AgencyLog.query.filter(AgencyLog.date.between(date, date_2))
+            logs = db.session.query(AgencyLog).join(Location).filter(AgencyLog.date.between(date,date_2), Location.plant_id != 4)
             extras = 0
             count = logs.count()
             delta = date_2 - date
@@ -219,21 +221,23 @@ def print_agency_report():
             title = 'Consolidated Agency Report by location'
             location = request.form.get('loc')
             loc = Location.query.get(location)
-            logs = AgencyLog.query.filter(AgencyLog.date.between(date, date_2), AgencyLog.location_id == location)
+            logs = db.session.query(AgencyLog).join(Location).filter(AgencyLog.date.between(date, date_2), AgencyLog.location_id == location)
             delta = date_2 - date
             return render_template('Reports/agency-report-print.html', logs=logs, title=title, loc=loc, date=date, date_2=date_2, delta=delta)
 
         elif printid == 8:
             title = 'Supervisor Report'
-            supervisor = request.form.get('supervisor_name')
+            supervisor = int(request.form.get('supervisor_name'))
+           
             logs = AgencyLog.query.filter_by(Supervisor_id=supervisor)
+          
             count = logs.count()
-            extra = 0
+            extras = 0
             for i in logs:
                 if i.manpower:
-                    extra += i.manpower
+                    extras += i.manpower
             return render_template('Reports/agency-report-print.html', logs=logs, title=title,
-                                         extra=extra, count=count)
+                                         extras=extras, count=count)
 
     else:
         flash('Wrong Inputs')

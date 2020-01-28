@@ -62,6 +62,26 @@
                             
                           
                     </form>
+
+                    {% if current_user.user_plant == 3 %}
+                        <form class="mt-2" action="{{url_for('report.report_print')}}" method="POST">
+                        {% else %}
+                        <form class="form-row" action="{{url_for('sachin.sachin_report_print')}}" method="POST">
+                        {% endif %}
+                            <p><strong>Visitor Wise Report</strong></p>
+                            <div class="form-row">
+                                <input type="hidden" name="printid" value="14">
+                            <label class=" mb-2 h6 col-form-label" for="visitor_id">Select Visitor : </label>
+                                <select class="form-control" name="visitor_id" id="visitor_id">
+                                    {% for i in vis | sort(attribute='name') %}
+                                        <option value="{{i.id}}">{{i.name}}</option>
+                                    {% endfor %}
+                                </select>
+                            <input type="submit"  class="mt-2 btn btn-primary btn-block btn-sm" value="Print">
+                            </div>
+                            
+                          
+                    </form>
                         
                     </div>
                 </div>
@@ -72,12 +92,16 @@
             <div class="modal-dialog" role="form">  
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title"> Date Wise Report </h5>
+                        <h5 class="modal-title"> Department Wise Report </h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     </div>
 
                     <div class="modal-body">
-                            <form class="form-row" action="{{url_for('report.report_print')}}" method="POST">
+                        {% if current_user.user_plant == 3 %}
+                        <form class="mt-2" action="{{url_for('report.report_print')}}" method="POST">
+                        {% else %}
+                        <form class="form-row" action="{{url_for('sachin.sachin_report_print')}}" method="POST">
+                        {% endif %}
                             <input type="hidden" name="printid" value="9">
                             <label class=" mb-2 h6 col-form-label" for="#date">Select Date : </label>
                             <input id="date" type="date" class="form-control" name="date" autofocus>
@@ -95,6 +119,28 @@
                             <input type="submit"  class="mt-2 btn btn-primary btn-block btn-sm" value="Print">
                               
                         </form>
+                        {% if current_user.user_plant == 3 %}
+                        <form class="mt-2" action="{{url_for('report.report_print')}}" method="POST">
+                        {% else %}
+                        <form class="form-row" action="{{url_for('sachin.sachin_report_print')}}" method="POST">
+                        {% endif %}
+                            <p><strong>Consolidated Report</strong></p>
+                            <div class="form-row">
+                               
+                                <input type="hidden" name="printid" value="16">
+                            
+                            <label class=" mb-2 h6 col-form-label" for="#date1">Select Date : </label>
+                            <input id="date1" type="date" class="form-control col mr-2 " name="date" > 
+                            <input id="date2" type="date" class="form-control col" name="date2" >
+                            <select class="form-control" name="department">
+                                {% for d in departments %}
+                                <option value="{{d.id}}">{{d.department_name}}</option>
+                                {% endfor %}
+                            </select>
+                            <input type="submit"  class="mt-2 btn btn-primary btn-block btn-sm" value="Print">
+                            </div>
+                        </form>
+                       
                         
                     </div>
                 </div>
@@ -105,7 +151,7 @@
                 <div class="modal-dialog" role="form">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title"> Date Wise Report </h5>
+                            <h5 class="modal-title">  Employee Sorted Report </h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                         </div>
                         <div class="modal-body">
