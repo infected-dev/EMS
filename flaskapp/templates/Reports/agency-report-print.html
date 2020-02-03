@@ -45,7 +45,7 @@
             
            
         </style>
-        </style>
+        
     </head>
     <body>
         <div class="container-fulid P-1">   
@@ -133,8 +133,6 @@
                         </div>
                         {% endif %} 
 
-
-                        
 
                         {% if title == 'Agency Records Sorted by Location' %}
                         <div class="mr-2 mb-2 row">
@@ -349,7 +347,9 @@
                         
                         {% if title == 'Consolidated Agency Report' %}
                         <div class="col text-center ">
+                            
                             <p><strong>{{date.strftime("%d-%b-%Y")}}</strong> to <strong>{{date_2.strftime("%d-%b-%Y")}}</strong><span class="ml-2">( {{delta.days + 1}} Days</span> )</p>
+
                         </div>
                         <div class="col text-right">
                             <strong >Agency Count:<span class="ml-1">{{count}}
@@ -510,8 +510,12 @@
                             {% for group in logs | groupby('date') %}   
                             <div class="ml-4">
 
-                               
-                                   <p style="page-break-before:always"><strong class="pagebreak"> Date: {{group.grouper.strftime('%d/%m/%Y')}} <em>(Total :  {{group.list | length}})</em> </strong></p>
+                                {% if group.list|length <= 4 %}
+                                    <p style="page-break-before:avoid"><strong class="pagebreak"> Date: {{group.grouper.strftime('%d/%m/%Y')}} <em>(Total :  {{group.list | length}})</em> </strong></p>
+                                {% else %}
+                                    <p style="page-break-before:always"><strong class="pagebreak"> Date: {{group.grouper.strftime('%d/%m/%Y')}} <em>(Total :  {{group.list | length}})</em> </strong></p>
+                                {% endif %}
+                                   
                                      
                                
                              </div>
@@ -519,6 +523,7 @@
                         </div>
 
                         <div id='tableclass' class="m">
+                          
                             <table class="mb-4 table table-sm table-bordered auto-index">
                                 <thead>
                                     <tr class="text-center">

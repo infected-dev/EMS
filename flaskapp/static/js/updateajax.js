@@ -42,13 +42,13 @@ $(document).ready(function(){
             var id = $(this).attr('attributes');
     
            var exit_time = $('#exittime'+id).val()
-    
+           var entrytime = $('#entrytime'+id).val()
            //alert(exittime);
     
            req = $.ajax({
                url : '/visitors/update',
                type : 'POST',
-               data : {vi_id : id , exittime:exit_time}
+               data : {vi_id : id , exittime:exit_time, entrytime:entrytime}
            });
     
            $('#datasection'+id).fadeOut(1000).fadeIn(1000);

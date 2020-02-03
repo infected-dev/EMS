@@ -230,9 +230,21 @@ def visitors_update():
         vid = request.form['vi_id']
         visitor = Timesheet_Visitor.query.filter_by(id=vid).first()
         duration = visitor.duration
-        exittime = datetime.strptime(
-            request.form['exittime'], '%H:%M').time()
+        exittime = request.form['exittime']
+        entrytime = request.form['entrytime']
+        if type(exittime) or type(entrytime) is str:
+            if len(exittime) > 5:
+                exittime = datetime.strptime(exittime, '%H:%M:%S').time()
+                entrytime = datetime.strptime(entrytime, '%H:%M').time()
+            elif len(entrytime) > 5:
+                entrytime = datetime.strptime(entrytime, '%H:%M:%S').time()
+                exittime = datetime.strptime(exittime, '%H:%M').time()
+            else:    
+                exittime = datetime.strptime(exittime, '%H:%M').time()
+                entrytime = datetime.strptime(entrytime, '%H:%M').time()
+        visitor.in_time = entrytime
         visitor.out_time = exittime
+
         db.session.commit()
         if (duration == None or 'none'):
             intime = visitor.in_time

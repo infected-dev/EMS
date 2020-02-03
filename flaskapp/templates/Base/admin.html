@@ -798,10 +798,14 @@ Admin Panel
         var a_name = $('#agency_name').val()
 
         req = $.ajax({
-            url: '/admin/post/agency',
+            url: '/admin/update/agency',
             type: 'POST',
             data:{
                 f_id : f_id, a_id: a_id, a_name: a_name
+            },
+            success: function(){
+                $('#agency_name'+a_id).html(a_name)
+                $('.toast').toast('show')
             }
         });
         $('#editagency').modal('hide')

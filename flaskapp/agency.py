@@ -283,7 +283,7 @@ def tools_agency():
 def edit_agency():
     date = request.form.get('selected_date')
     if date:
-        date = datetime.strptime(date, '%Y-%M-%d').date()
+        date = datetime.strptime(date, '%Y-%m-%d').date()
     log = AgencyLog.query.filter_by(date=date).all()
     worktypes = WorkType.query.all()
     supervisors = Supervisor.query.all()
