@@ -7,6 +7,7 @@ from . import db
 
 edit = Blueprint('edit', __name__)
 
+selected_date = ''
 
 #Main Page Render for Editing vistor data
 @edit.route('/editVistor', methods=['GET','POST'])
@@ -14,10 +15,11 @@ def edit_visitor():
     backdate_visitors = ''
     emps = Employee.query.all()
     if request.form:
+        global selected_date
         selected_date = request.form.get('selected_date')
         date = datetime.strptime(selected_date, '%Y-%m-%d').date()
         backdate_visitors = Timesheet_Visitor.query.filter_by(date=date, plant_id=3).all()
-    return render_template('Edits/edit-Visitor.html', backdate_visitors=backdate_visitors,emps=emps)
+    return render_template('Edits/edit-Visitor.html', backdate_visitors=backdate_visitors,emps=emps, selected_date=selected_date)
 
 
 #Editing department route for visitor

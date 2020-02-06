@@ -266,5 +266,7 @@ def visitors_delete():
     db.session.commit()
     if page == 'dataentry':
         return redirect(url_for('dataentry.post_format'))
+    elif page == 'edit':    
+        return redirect(url_for('edit.edit_visitor'))
     else:
         return redirect(url_for('report.report_main'))

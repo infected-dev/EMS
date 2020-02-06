@@ -22,8 +22,8 @@ Edit Visitor Data
                                         {% endif %}
                                             <div class="form-group">
                                                 <label for="selected_date">Choose Date:</label>
-                                               <input class="form-control" type="date" name="selected_date" autofocus>
-                                                <input class="btn btn-success btn-block mt-2" type="submit" value="Get">
+                                               <input class="form-control" type="date" name="selected_date" autofocus id="selected_date" value="{{selected_date}}">
+                                                <input id="geteditdata" class="btn btn-success btn-block mt-2" type="submit" value="Get">
                                             </div>
                                         </form>
                                     
@@ -79,7 +79,13 @@ Edit Visitor Data
                                             
                                             <td><button attributes="{{visitor.id}}" type="submit" id="button{{visitor.id}}"
                                                     class="update btn btn-warning btn-sm">Update</button></td>
-            
+                                            
+                                            <td><form action="{{url_for('dataentry.visitors_delete')}}" method="POST">
+                                                        <input type="hidden" name="page" value="edit">
+                                                        <input type="hidden" name="vi_id" value="{{visitor.id}}">
+                                                        <input type="hidden" name="page" value="dataentry">
+                                                        <input id="deletebtn" value="Delete" class="btn btn-danger btn-sm" type="submit">
+                                            </form></td>
                                             
             
                                             <td>
@@ -175,6 +181,14 @@ Edit Visitor Data
     };
     
     addSerialNumber();
+</script>
+
+<script>
+    $('#deletebtn').on('click', function(){
+        var d = $('#selected_date').val()
+
+        
+    })
 </script>
 
 {% endblock %}
